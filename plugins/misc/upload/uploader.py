@@ -1,5 +1,3 @@
-# Copyright (C) 2020-2022 by UsergeTeam@Github, < https://github.com/UsergeTeam >.
-#
 # This file is part of < https://github.com/UsergeTeam/Userge > project,
 # and is released under the "GNU v3.0 License Agreement".
 # Please see < https://github.com/UsergeTeam/Userge/blob/master/LICENSE >
@@ -54,13 +52,13 @@ async def upload_path(message: Message, path: Path, del_path: bool):
 
 
 async def upload(message: Message, path: Path, del_path: bool = False,
-                 extra: str = '', with_thumb: bool = True):
+                 extra: str = '', with_thumb: bool = False):
     if 'wt' in message.flags:
-        with_thumb = False
+        with_thumb = True
     if 'r' in message.flags:
         del_path = True
     if path.name.lower().endswith(
-            (".mkv", ".mp4", ".webm", ".m4v")) and ('d' not in message.flags):
+            (".webm", ".m4v")) and ('d' not in message.flags):
         await vid_upload(message, path, del_path, extra, with_thumb)
     elif path.name.lower().endswith(
             (".mp3", ".flac", ".wav", ".m4a")) and ('d' not in message.flags):
@@ -73,7 +71,7 @@ async def upload(message: Message, path: Path, del_path: bool = False,
 
 
 async def doc_upload(message: Message, path, del_path: bool = False,
-                     extra: str = '', with_thumb: bool = True):
+                     extra: str = '', with_thumb: bool = False):
     str_path = str(path)
     sent: Message = await message.client.send_message(
         message.chat.id, f"`Uploading {str_path} as a doc ... {extra}`")
