@@ -87,6 +87,7 @@ async def get_movie_description(imdb_id, max_length):
     mov_name = soup.get('title')
     image_link = soup.get('poster')
     genres = soup.get("genres")
+    year = soup.get("year")
     duration = soup.get("duration")
     mov_rating = soup.get("UserRating").get("rating")
     if mov_rating.strip() == '/':
@@ -107,15 +108,17 @@ async def get_movie_description(imdb_id, max_length):
 <b>Genres: </b><code>{' '.join(genres) if len(genres) > 0 else ''}</code>
 <b>Rating⭐: </b><code>{mov_rating}</code>
 <b>Country🗺: </b><code>{mov_country}</code>
-<b>Language: </b><code>{mov_language}</code>
+<b>Language: </b>hindi 
+<b>Duration : </b><code>{duration}</code>
 <b>Cast Info🎗: </b>
-  <b>Director📽: </b><code>{director}</code>
-  <b>Writer📄: </b><code>{writer}</code>
-  <b>Stars🎭: </b><code>{stars}</code>
+<b>Director📽: </b><code>{director}</code>
+<b>Writer📄: </b><code>{writer}</code>
+<b>Stars🎭: </b><code>{stars}</code>
+<b>Release date : </b><code>{year}</code>
+<b>Resolution : 480,720,1080</b>
+<b>Story Line : </b><em>{story_line}</em>
+<b>Available On : 👇👇👇👇 </b>"""
 
-<b>IMDB URL Link🔗: </b>{mov_link}
-
-<b>Story Line : </b><em>{story_line}</em>"""
 
     povas = await search_jw(mov_name, imdb.WATCH_COUNTRY)
     if len(description + povas) > max_length:
