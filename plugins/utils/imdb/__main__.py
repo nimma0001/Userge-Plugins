@@ -11,7 +11,6 @@
 import json
 import os
 from urllib.parse import urlparse
-from justwatch import JustWatch
 
 import requests
 from pyrogram import filters
@@ -26,7 +25,7 @@ from pyrogram.types import (
 
 from userge import userge, Message, config, pool
 from .. import imdb
-just_watch = JustWatch()
+
 THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
 
 
@@ -80,11 +79,10 @@ async def _imdb(message: Message):
         )
 
 
-async def get_movie_description(imdb_id, max_length, messege: Message):
+async def get_movie_description(imdb_id, max_length):
     response = await _get(imdb.API_TWO_URL.format(imdbttid=imdb_id))
     soup = json.loads(response.text)
-    nama = message.input_str
-    avin = hhm
+
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup.get('title')
     image_link = soup.get('poster')
@@ -100,56 +98,6 @@ async def get_movie_description(imdb_id, max_length, messege: Message):
             mov_rating += f" (based on {users} users)"
     if duration:
         genres.append(duration)
-    f = open('providerslist.txt', 'w')
-    results_by_multiple = just_watch.search_for_item(query=nama)  
-    print(results_by_multiple, file=f)
-    f.close()
-#f = open('providerslist.txt', 'r')
-#with open('providerslist.txt') as m:
-with open('providerslist.txt') as f:
- for line in f: 
-    if 'nlx' in line:
-      hhm = 'Netflix'
-    elif 'snl' in line:
-      hhm = 'sonyliv'
-    elif 'prv' in line:
-      hhm = 'Amazon_prime_video'
-    elif 'mxp' in line:
-      hhm = 'mxplayer'
-    elif 'hsr' in line:
-      hhm = 'hotstar'
-    elif 'dnp' in line:
-      hhm = 'Disneyplus'
-    elif 'disney' in line:
-      hhm = 'disney'
-    elif 'jio' in line:
-       hhm = 'jio_cinema'
-    elif 'itu' in line:
-      hhm = 'itune'
-    elif 'ply' in line:
-      hhm = 'play_store'
-    elif 'mxp' in line:
-      hhm = 'Mx player'
-    elif 'zee5' in line:
-      hhm = 'Zee5'
-    elif 'aha' in line:
-      hhm = 'aha'
-    elif 'voot' in line:
-      hhm = 'voot'
-    elif 'abj' in line:
-      hhm = 'alt balaji'
-    elif 'hoc' in line:
-      hhm = 'hoichoi'
-    elif 'sme' in line:
-      hhm = 'shemaroome'
-    elif 'snx' in line:
-       hhm = 'sun-nxt'
-    elif 'ern' in line:
-      hhm = 'ero now'
-    elif 'hay' in line:
-      hhm = 'hayu'
-    else:
-     hhm = 'notfound'
 
     mov_country, mov_language = get_countries_and_languages(soup)
     director, writer, stars = get_credits_text(soup)
@@ -169,7 +117,7 @@ with open('providerslist.txt') as f:
 <b>Release date : </b><code>{year}</code>
 <b>Resolution : 480,720,1080</b>
 <b>Story Line : </b><em>{story_line}</em>
-<b>Available On : 👇👇👇👇 </b><code>{avin}</code>"""
+<b>Available On : 👇👇👇👇 </b>"""
 
 
     povas = await search_jw(mov_name, imdb.WATCH_COUNTRY)
