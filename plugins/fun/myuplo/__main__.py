@@ -214,7 +214,7 @@ async def eval_(message: Message):
             _EVAL_TASKS.pop(future, None)
 
 
-@userge.on_cmd("tr", about={
+@userge.on_cmd("trm", about={
     'header': "run commands in shell (terminal)",
     'flags': {'-r': "raw text when send as file"},
     'usage': "{tr}term [commands]",
