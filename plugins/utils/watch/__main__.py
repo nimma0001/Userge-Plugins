@@ -94,7 +94,7 @@ async def fetch_watch_sources(message: Message):
     if release_date is None:
         release_date = release_year
 
-    output_ = f"**Movie:**`{title}`\n**Language: Hindi**\n**Resolution: 480,720,1080**\n**Release Year:**`{release_year}`"
+    output_ = f"**Movie:**`{title}`\n**Language:** Hindi\n**Resolution:** 480,720,1080\n**Release Year:**`{release_year}`"
     if imdb_score:
         output_ = output_ + f"\n**IMDB: **{imdb_score}"
     if tmdb_score:
