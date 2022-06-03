@@ -281,14 +281,11 @@ if userge.has_bot:
         inline_query.stop_propagation()
 
 
-async def search_jw(movie_name: str, locale: str):
+async def search_jw(movie_name: str):
     m_t_ = ""
     if not imdb.API_THREE_URL:
         return m_t_
-    response = await _get(imdb.API_THREE_URL.format(
-        q=movie_name, 
-        L=locale
-))
+    response = await _get(imdb.API_THREE_URL.format(q=movie_name))
     soup = json.loads(response.text)
     items = soup["items"]
     for item in items:
