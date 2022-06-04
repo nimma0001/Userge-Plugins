@@ -47,7 +47,7 @@ async def _imdb(message: Message):
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
         response = await _get(imdb.API_ONE_URL.format(theuserge=movie_name))
         srch_results = json.loads(response.text)
-        mov_imdb_id = srch_results.get("d")[0].get("id")
+        mov_imdb_id = srch_results.get("d")[1].get("id")
         image_link, description = await get_movie_description(
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
