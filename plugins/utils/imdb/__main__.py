@@ -80,7 +80,7 @@ async def _imdb(message: Message):
 
 
 async def get_movie_description(imdb_id, max_length):
-    response = await _get(urlo+mov_imdb_id)
+    response = await _get(urlo+imdb_id)
     soup = json.loads(response.text)
 
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
