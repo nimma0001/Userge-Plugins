@@ -25,7 +25,7 @@ from pyrogram.types import (
 
 from userge import userge, Message, config, pool
 from .. import imdb
-
+urlo="https://i-m-d-b.herokuapp.com/?tt="
 THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
 
 
@@ -80,7 +80,7 @@ async def _imdb(message: Message):
 
 
 async def get_movie_description(imdb_id, max_length):
-    response = await _get(imdb.API_TWO_URL.format(imdbttid=imdb_id))
+    response = await _get(urlo+mov_imdb_id)
     soup = json.loads(response.text)
 
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
