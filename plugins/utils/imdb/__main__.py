@@ -123,6 +123,7 @@ async def get_movie_description(imdb_id, max_length):
 <b>Stars🎭: </b><code>{stars}</code>
 <b>Release date : </b><code>{year}</code>
 <b>Resolution : 480,720,1080</b>
+<b>IMDB :</b> https://imdb.com/title/<code>{imdb_id}</code>
 <b>Story Line : </b><em>{story_line}</em>
 <b>Available On : 👇👇👇👇 </b>"""
 
