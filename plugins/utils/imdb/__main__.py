@@ -126,7 +126,7 @@ async def get_movie_description(imdb_id, max_length):
 <b>Story Line : </b><em>{story_line}</em>
 <b>Available On : 👇👇👇👇 </b>"""
 
-    povas = await search_jw(mov_name)
+    povas = await search_jw(mov_name, imdb.WATCH_COUNTRY)
     if len(description + povas) > max_length:
         inc = max_length - len(description + povas)
         description = description[:inc - 3].strip() + "..."
