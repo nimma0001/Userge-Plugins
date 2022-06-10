@@ -52,7 +52,6 @@ async def _imdb(message: Message):
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
     except (IndexError, json.JSONDecodeError, AttributeError):
-        await message.edit("Bruh, Plox enter **Valid movie name** kthx")
         movie_name = message.input_str
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
         response = await _get(imdb.API_ONE_URL+movie_name)
@@ -288,12 +287,13 @@ if userge.has_bot:
         inline_query.stop_propagation()
 
 
-async def search_jw(movie_name: str):
+async def search_jw(movie_name: str, locale: str):
     m_t_ = ""
     if not imdb.API_THREE_URL:
         return m_t_
     response = await _get(imdb.API_THREE_URL.format(
-        q=movie_name))
+        q=movie_name,
+        L=locale))
     soup = json.loads(response.text)
     items = soup["items"]
     for item in items:
