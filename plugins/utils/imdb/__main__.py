@@ -47,13 +47,19 @@ async def _imdb(message: Message):
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
         response = await _get(imdb.API_ONE_URL.format(theuserge=movie_name))
         srch_results = json.loads(response.text)
-        mov_imdb_id = srch_results.get("d")[0].get("id")
+        mov_imdb_id = srch_results.get("d")[1].get("id")
         image_link, description = await get_movie_description(
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
     except (IndexError, json.JSONDecodeError, AttributeError):
-        await message.edit("Bruh, Plox enter **Valid movie name** kthx")
-        return
+        movie_name = message.input_str
+        await message.edit(f"__searching IMDB for__ : `{movie_name}`")
+        response = await _get(imdb.API_ONE_URL+movie_name)
+        srch_results = json.loads(response.text)
+        mov_imdb_id = srch_results.get("d")[0].get("id")
+        image_link, description = await get_movie_description(
+            mov_imdb_id, config.MAX_MESSAGE_LENGTH
+        )
 
     if os.path.exists(THUMB_PATH):
         await message.client.send_photo(
@@ -80,7 +86,7 @@ async def _imdb(message: Message):
 
 
 async def get_movie_description(imdb_id, max_length):
-    response = await _get(imdb.API_TWO_URL.format(imdbttid=imdb_id))
+    response = await _get(imdb.API_TWO_URL.format(theuserge=imdb_id))
     soup = json.loads(response.text)
 
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
