@@ -114,7 +114,7 @@ async def get_movie_description(imdb_id, max_length):
 <b>Genres: </b><code>{' '.join(genres) if len(genres) > 0 else ''}</code>
 <b>Rating⭐: </b><code>{mov_rating}</code>
 <b>Country🗺: </b><code>{mov_country}</code>
-<b>Language: </b>hindi 
+<b>Language: </b>hindi <code>{mov_language}</code>
 <b>Duration : </b><code>{duration}</code>
 <b>Cast Info🎗: </b>
 <b>Director📽: </b><code>{director}</code>
