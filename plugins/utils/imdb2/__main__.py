@@ -73,9 +73,12 @@ async def _imdb(message: Message):
         )
         await message.delete()
     elif image_link != True:
-        await message.edit("poster not available download poster first as imdb_thumb.jpg")
-        return
-    elif image_link is not None:
+        await message.edit(
+            description,
+            disable_web_page_preview=True,
+            parse_mode="HTML"
+        )
+    else image_link is not None:
         await message.client.send_photo(
             chat_id=message.chat.id,
             photo=image_link.replace("_V1_", "_V1_UX720"),
@@ -83,12 +86,6 @@ async def _imdb(message: Message):
             parse_mode="html"
         )
         await message.delete()
-    else:
-        await message.edit(
-            description,
-            disable_web_page_preview=True,
-            parse_mode="HTML"
-        )
 
 
 async def get_movie_description(imdb_id, max_length):
