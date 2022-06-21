@@ -75,7 +75,7 @@ async def _imdb(message: Message):
     elif image_link is not None:
         await message.client.send_photo(
             chat_id=message.chat.id,
-            photo=image_link,
+            photo=imagelink,
             caption=description,
             parse_mode="html"
         )
@@ -95,6 +95,7 @@ async def get_movie_description(imdb_id, max_length):
     mov_name = soup.get('title')
     year = soup.get("year")
     image_link = soup.get('poster')
+    imagelink = image_link.replace("_V1_", "_V1_UX720")
     genres = soup.get("genres")
     duration = soup.get("duration")
     mov_rating = soup.get("UserRating").get("rating")
