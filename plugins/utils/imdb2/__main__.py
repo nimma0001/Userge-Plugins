@@ -72,6 +72,14 @@ async def _imdb(message: Message):
             parse_mode="html"
         )
         await message.delete()
+    elif image_link is not NoneType:
+        await message.client.send_photo(
+            chat_id=message.chat.id,
+            photo=image_link.replace("_V1_", "_V1_UX720"),
+            caption=description,
+            parse_mode="html"
+        )
+        await message.delete()
     elif image_link is not None:
         await message.client.send_photo(
             chat_id=message.chat.id,
@@ -125,7 +133,7 @@ async def get_movie_description(imdb_id, max_length):
 <b>Stars🎭: </b><code>{stars}</code>
 <b>Release date : </b><code>{year}</code>
 <b>Resolution : 480,720,1080</b>
-<b>IMDB :</b> f"[ClickHere](movie_link)
+<b>IMDB :</b> f"[ClickHere](movie_link)"
 <b>Story Line : </b><em>{story_line}</em>
 <b>Available On : 👇👇👇👇 </b>"""
 
