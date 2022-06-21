@@ -61,7 +61,7 @@ async def _imdb(message: Message):
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
     except (IndexError, json.JSONDecodeError, AttributeError):
-        print("check spelling or movie not available on imdb")
+        await message.edit("check spelling or movie not available on imdb")
         return
 
     if os.path.exists(THUMB_PATH):
