@@ -29,7 +29,7 @@ urlo="https://i-m-d-b.herokuapp.com/?tt="
 THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
 
 
-@userge.on_cmd("imdb", about={
+@userge.on_cmd("imdb2", about={
     'header': "Scrap Movies & Tv Shows from IMDB",
     'description': "Get info about a Movie on IMDB.\n"
                    "[NOTE: To use a custom poster, download "
