@@ -95,7 +95,6 @@ async def get_movie_description(imdb_id, max_length):
     mov_name = soup.get('title')
     year = soup.get("year")
     image_link = soup.get('poster')
-    imagelink = image_link.replace("_V1_", "_V1_UX720")
     genres = soup.get("genres")
     duration = soup.get("duration")
     mov_rating = soup.get("UserRating").get("rating")
