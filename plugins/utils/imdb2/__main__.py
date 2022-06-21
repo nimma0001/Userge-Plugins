@@ -54,12 +54,15 @@ async def _imdb(message: Message):
     except (IndexError, json.JSONDecodeError, AttributeError):
         movie_name = message.input_str
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-        response = await _get(https://betterimdbot.herokuapp.com/search.php?_="+movie_name)
+        response = await _get("https://betterimdbot.herokuapp.com/search.php?_="+movie_name)
         srch_results = json.loads(response.text)
         mov_imdb_id = srch_results.get("d")[1].get("id")
         image_link, description = await get_movie_description(
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
+    except (IndexError, json.JSONDecodeError, AttributeError):
+        print("check spelling or movie not available on imdb")
+        return
 
     if os.path.exists(THUMB_PATH):
         await message.client.send_photo(
