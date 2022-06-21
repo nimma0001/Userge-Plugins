@@ -72,12 +72,6 @@ async def _imdb(message: Message):
             parse_mode="html"
         )
         await message.delete()
-    elif image_link != True:
-        await message.edit(
-            description,
-            disable_web_page_preview=True,
-            parse_mode="HTML"
-        )
     elif image_link is not None:
         await message.client.send_photo(
             chat_id=message.chat.id,
@@ -86,7 +80,12 @@ async def _imdb(message: Message):
             parse_mode="html"
         )
         await message.delete()
-
+    else:
+        await message.edit(
+            description,
+            disable_web_page_preview=True,
+            parse_mode="HTML"
+        )
 
 async def get_movie_description(imdb_id, max_length):
     response = await _get("https://i-m-d-b.herokuapp.com/?tt="+imdb_id)
