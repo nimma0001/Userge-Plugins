@@ -72,14 +72,9 @@ async def _imdb(message: Message):
             parse_mode="html"
         )
         await message.delete()
-    elif image_link is not NoneType:
-        await message.client.send_photo(
-            chat_id=message.chat.id,
-            photo=image_link.replace("_V1_", "_V1_UX720"),
-            caption=description,
-            parse_mode="html"
-        )
-        await message.delete()
+    elif image_link != True:
+        await message.edit("poster not available download poster first as imdb_thumb.jpg")
+        return
     elif image_link is not None:
         await message.client.send_photo(
             chat_id=message.chat.id,
