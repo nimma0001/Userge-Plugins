@@ -81,7 +81,7 @@ async def _imdb(message: Message):
     elif image_link is not None:
         await message.client.send_photo(
             chat_id=message.chat.id,
-            photo=image_link.replace("_V1_", "_V1_UX720"),
+            photo=image_link,
             caption=description,
             parse_mode="html"
         )
