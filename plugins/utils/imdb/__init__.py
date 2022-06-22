@@ -1,4 +1,4 @@
-# import os
+import os
 
 API_ONE_URL = os.environ.get("IMDB_API_ONE_URL")
 API_TWO_URL = os.environ.get("IMDB_API_TWO_URL")
