@@ -25,7 +25,7 @@ from pyrogram.types import (
 
 from userge import userge, Message, config, pool
 from .. import imdb
-urlo="https://i-m-d-b.herokuapp.com/?tt="
+
 THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
 
 
@@ -45,21 +45,24 @@ async def _imdb(message: Message):
     try:
         movie_name = message.input_str
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-        response = await _get(imdb.API_ONE_URL+movie_name)
+        response = await _get(imdb.API_ONE_URL.format(theuserge=movie_name))
         srch_results = json.loads(response.text)
-        mov_imdb_id = srch_results.get("d")[1].get("id")
+        mov_imdb_id = srch_results.get("d")[0].get("id")
         image_link, description = await get_movie_description(
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
     except (IndexError, json.JSONDecodeError, AttributeError):
         movie_name = message.input_str
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-        response = await _get(imdb.API_ONE_URL+movie_name)
+        response = await _get("imdb.API_ONE_URL.format(theuserge=movie_name))
         srch_results = json.loads(response.text)
-        mov_imdb_id = srch_results.get("d")[0].get("id")
+        mov_imdb_id = srch_results.get("d")[1].get("id")
         image_link, description = await get_movie_description(
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
+    except (IndexError, json.JSONDecodeError, AttributeError):
+        await message.edit("check spelling or movie not available on imdb")
+        return
 
     if os.path.exists(THUMB_PATH):
         await message.client.send_photo(
@@ -72,7 +75,7 @@ async def _imdb(message: Message):
     elif image_link is not None:
         await message.client.send_photo(
             chat_id=message.chat.id,
-            photo=image_link.replace("_V1_", "_V1_UX720"),
+            photo=image_link,
             caption=description,
             parse_mode="html"
         )
@@ -86,14 +89,13 @@ async def _imdb(message: Message):
 
 
 async def get_movie_description(imdb_id, max_length):
-    response = await _get(urlo+imdb_id)
+    response = await _get(imdb.API_TWO_URL.format(imdbttid=imdb_id))
     soup = json.loads(response.text)
 
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup.get('title')
     image_link = soup.get('poster')
     genres = soup.get("genres")
-    year = soup.get("year")
     duration = soup.get("duration")
     mov_rating = soup.get("UserRating").get("rating")
     if mov_rating.strip() == '/':
@@ -114,17 +116,15 @@ async def get_movie_description(imdb_id, max_length):
 <b>Genres: </b><code>{' '.join(genres) if len(genres) > 0 else ''}</code>
 <b>Rating⭐: </b><code>{mov_rating}</code>
 <b>Country🗺: </b><code>{mov_country}</code>
-<b>Language: </b>hindi <code>{mov_language}</code>
-<b>Duration : </b><code>{duration}</code>
+<b>Language: </b><code>{mov_language}</code>
 <b>Cast Info🎗: </b>
-<b>Director📽: </b><code>{director}</code>
-<b>Writer📄: </b><code>{writer}</code>
-<b>Stars🎭: </b><code>{stars}</code>
-<b>Release date : </b><code>{year}</code>
-<b>Resolution : 480,720,1080</b>
-<b>IMDB :</b> https://imdb.com/title/{imdb_id}
-<b>Story Line : </b><em>{story_line}</em>
-<b>Available On : 👇👇👇👇 </b>"""
+  <b>Director📽: </b><code>{director}</code>
+  <b>Writer📄: </b><code>{writer}</code>
+  <b>Stars🎭: </b><code>{stars}</code>
+
+<b>IMDB URL Link🔗: </b>{mov_link}
+
+<b>Story Line : </b><em>{story_line}</em>"""
 
     povas = await search_jw(mov_name, imdb.WATCH_COUNTRY)
     if len(description + povas) > max_length:
@@ -293,7 +293,8 @@ async def search_jw(movie_name: str, locale: str):
         return m_t_
     response = await _get(imdb.API_THREE_URL.format(
         q=movie_name,
-        L=locale))
+        L=locale
+    ))
     soup = json.loads(response.text)
     items = soup["items"]
     for item in items:
