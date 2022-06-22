@@ -147,14 +147,14 @@ def get_countries_and_languages(soup):
         else:
             lg_text = languages[0]
     else:
-        lg_text = "No Languages Found!"
+        lg_text = ""
     if countries:
         if len(countries) > 1:
             ct_text = ', '.join(countries)
         else:
             ct_text = countries[0]
     else:
-        ct_text = "No Country Found!"
+        ct_text = "Not Mentioned on IMDB"
     return ct_text, lg_text
 
 
