@@ -14,7 +14,6 @@ from urllib.parse import urlparse
 
 import requests
 from pyrogram import filters
-from pyrogram import enums
 from pyrogram.types import (
     CallbackQuery,
     InlineQuery,
@@ -66,7 +65,7 @@ async def _imdb(message: Message):
             chat_id=message.chat.id,
             photo=THUMB_PATH,
             caption=description,
-            parse_mode="enums.ParseMode.HTML"
+            parse_mode="HTML"
         )
         await message.delete()
     elif image_link is not None:
@@ -74,14 +73,14 @@ async def _imdb(message: Message):
             chat_id=message.chat.id,
             photo=image_link,
             caption=description,
-            parse_mode="enums.ParseMode.HTML"
+            parse_mode="HTML"
         )
         await message.delete()
     else:
         await message.edit(
             description,
             disable_web_page_preview=True,
-            parse_mode="enums.ParseMode.HTML"
+            parse_mode="HTML"
         )
 
 async def get_movie_description(imdb_id, max_length):
