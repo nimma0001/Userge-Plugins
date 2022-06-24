@@ -52,10 +52,6 @@ async def _imdb(message: Message):
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
     except (IndexError, json.JSONDecodeError, AttributeError):
-        movie_name = message.input_str
-        await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-        response = await _get("https://betterimdbot.herokuapp.com/search.php?_="+movie_name)
-        srch_results = json.loads(response.text)
         mov_imdb_id = srch_results.get("d")[1].get("id")
         image_link, description = await get_movie_description(
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
@@ -116,7 +112,7 @@ async def get_movie_description(imdb_id, max_length):
 <b>>Genres: </b><code>{' '.join(genres) if len(genres) > 0 else ''}</code>
 <b>Rating⭐: </b><code>{mov_rating}</code>
 <b>Country🗺: </b><code>{mov_country}</code>
-<b>Language: </b>hindi <code>{mov_language}</code>
+<b>Language: </b><code>{mov_language}</code>
 <b>Duration : </b><code>{duration}</code>
 <b>Cast Info🎗: </b>
 <b>Director📽: </b><code>{director}</code>
@@ -147,7 +143,7 @@ def get_countries_and_languages(soup):
         else:
             lg_text = languages[0]
     else:
-        lg_text = ""
+        lg_text = "Hindi"
     if countries:
         if len(countries) > 1:
             ct_text = ', '.join(countries)
