@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 
 import requests
 from pyrogram import filters
+from pyrogram import enums
 from pyrogram.types import (
     CallbackQuery,
     InlineQuery,
