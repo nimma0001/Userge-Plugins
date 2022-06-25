@@ -11,6 +11,7 @@
 import json
 import os
 from urllib.parse import urlparse
+from pyrogram import enums
 
 import requests
 from pyrogram import filters
@@ -65,7 +66,7 @@ async def _imdb(message: Message):
             chat_id=message.chat.id,
             photo=THUMB_PATH,
             caption=description,
-            parse_mode="HTML"
+            parse_mode=enums.ParseMode.HTML
         )
         await message.delete()
     elif image_link is not None:
@@ -73,14 +74,14 @@ async def _imdb(message: Message):
             chat_id=message.chat.id,
             photo=image_link,
             caption=description,
-            parse_mode="HTML"
+            parse_mode=enums.ParseMode.HTML
         )
         await message.delete()
     else:
         await message.edit(
             description,
             disable_web_page_preview=True,
-            parse_mode="HTML"
+            parse_mode=enums.ParseMode.HTML
         )
 
 async def get_movie_description(imdb_id, max_length):
@@ -254,7 +255,7 @@ if userge.has_bot:
                     title=f" {title} {year}",
                     input_message_content=InputTextMessageContent(
                         message_text=message_text,
-                        parse_mode="html",
+                        parse_mode=enums.ParseMode.HTML,
                         disable_web_page_preview=False
                     ),
                     url=imdb_url,
