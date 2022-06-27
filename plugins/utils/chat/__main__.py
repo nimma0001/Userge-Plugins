@@ -74,7 +74,6 @@ async def join_chat(message: Message):
 async def leave_chat(message: Message):
     """ Leave chat """
     await message.edit("`Good bye, Cruel World... :-) `")
-    await userge.leave_chat(message.chat.id)
 
 
 @userge.on_cmd("invite", about={
