@@ -8,12 +8,9 @@
 #
 # All rights reserved.
 
-import os
-
 import speedtest
-import wget
 
-from userge import userge, Message, pool
+from userge import userge, Message
 from userge.utils import humanbytes
 
 CHANNEL = userge.getCLogger(__name__)
@@ -34,7 +31,6 @@ async def speedtst(message: Message):
     except Exception as e:
         await message.err(e)
         return
-    path = await pool.run_in_thread(wget.download)(result['share'])
     output = f"""**--Started at {result['timestamp']}--
 
 Client:
@@ -55,8 +51,7 @@ Received: `{humanbytes(result['bytes_received'])}`
 Download: `{humanbytes(result['download'] / 8)}/s`
 Upload: `{humanbytes(result['upload'] / 8)}/s`**"""
     msg = await message.client.send_photo(chat_id=message.chat.id,
-                                          photo=path,
+                                          photo=result['share'],
                                           caption=output)
     await CHANNEL.fwd_msg(msg)
-    os.remove(path)
     await message.delete()
