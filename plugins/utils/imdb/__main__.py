@@ -11,6 +11,8 @@
 import json
 import os
 from urllib.parse import urlparse
+import urllib.request
+from pyrogram import enums
 
 import requests
 from pyrogram import filters
@@ -22,12 +24,12 @@ from pyrogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup
 )
-from pyrogram import enums
 
 from userge import userge, Message, config, pool
 from .. import imdb
 
 THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
+TMDB_KEY = "5dae31e75ff0f7a0befc272d5deadd73"
 
 
 @userge.on_cmd("imdb2", about={
@@ -46,7 +48,7 @@ async def _imdb(message: Message):
     try:
         movie_name = message.input_str
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-        response = await _get(imdb.API_ONE_URL.format(theuserge=movie_name))
+        response = await _get("https://betterimdbot.herokuapp.com/search.php?_="+movie_name)
         srch_results = json.loads(response.text)
         mov_imdb_id = srch_results.get("d")[0].get("id")
         image_link, description = await get_movie_description(
@@ -70,9 +72,12 @@ async def _imdb(message: Message):
         )
         await message.delete()
     elif image_link is not None:
+        fb = open(THUMB_PATH,'wb')
+        fb.write(urllib.request.urlopen(image_link).read())
+        f.close()
         await message.client.send_photo(
             chat_id=message.chat.id,
-            photo=image_link,
+            photo=THUMB_PATH,
             caption=description,
             parse_mode=enums.ParseMode.HTML
         )
@@ -84,14 +89,22 @@ async def _imdb(message: Message):
             parse_mode=enums.ParseMode.HTML
         )
 
-
 async def get_movie_description(imdb_id, max_length):
-    response = await _get(imdb.API_TWO_URL.format(imdbttid=imdb_id))
-    response2 = await _get("http://api.themoviedb.org/3/movie/"+imdbid+"/videos?api_key=5dae31e75ff0f7a0befc272d5deadd73")
-    soup = json.loads(response.text)
+    response = await _get("https://i-m-d-b.herokuapp.com/?tt="+imdb_id)
+    response2 = await _get("http://api.themoviedb.org/3/movie/"+imdb_id+"/videos?api_key="+TMDB_KEY)
     soup2 = json.loads(response2.text)
+    soup = json.loads(response.text)
+    try: 
+        yt_code = soup2.get("results")[0].get("key")
+        yt_link = f"https://m.youtube.com/watch?v={yt_code}"
+    except (IndexError, json.JSONDecodeError, AttributeError):
+        yt_code = soup.get("trailer_vid_id")
+        yt_link = f"https://m.imdb.com/video/vi1027457561/{yt_code}"
+    except (IndexError, json.JSONDecodeError, AttributeError):
+        yt_link = f"Couldn't Find"
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup.get('title')
+    year = soup.get("year")
     image_link = soup.get('poster')
     genres = soup.get("genres")
     duration = soup.get("duration")
@@ -111,18 +124,21 @@ async def get_movie_description(imdb_id, max_length):
 
     description = f"<b>Title</b><a href='{image_link}'>🎬</a>: <code>{mov_name}</code>"
     description += f"""
-<b>Genres: </b><code>{' '.join(genres) if len(genres) > 0 else ''}</code>
+<b>>Genres: </b><code>{' '.join(genres) if len(genres) > 0 else ''}</code>
 <b>Rating⭐: </b><code>{mov_rating}</code>
 <b>Country🗺: </b><code>{mov_country}</code>
 <b>Language: </b><code>{mov_language}</code>
+<b>Duration : </b><code>{duration}</code>
 <b>Cast Info🎗: </b>
-  <b>Director📽: </b><code>{director}</code>
-  <b>Writer📄: </b><code>{writer}</code>
-  <b>Stars🎭: </b><code>{stars}</code>
-
-<b>IMDB URL Link🔗: </b>{mov_link}
-
-<b>Story Line : </b><em>{story_line}</em>"""
+<b>Director📽: </b><code>{director}</code>
+<b>Writer📄: </b><code>{writer}</code>
+<b>Stars🎭: </b><code>{stars}</code>
+<b>Release date : </b><code>{year}</code>
+<b>Resolution : 480,720,1080</b>
+<b>IMDB :</b> https://www.imdb.com/title/{imdb_id}
+<b>YOUTUBE TRAILER 🎦 : </b> <code>{yt_link}</code>
+<b>Story Line : </b><em>{story_line}</em>
+<b>Available On : 👇👇👇👇 </b>"""
 
     povas = await search_jw(mov_name, imdb.WATCH_COUNTRY)
     if len(description + povas) > max_length:
@@ -136,20 +152,21 @@ async def get_movie_description(imdb_id, max_length):
 def get_countries_and_languages(soup):
     languages = soup.get("Language")
     countries = soup.get("CountryOfOrigin")
+    lg_text = ""
     if languages:
         if len(languages) > 1:
             lg_text = ', '.join(languages)
         else:
             lg_text = languages[0]
     else:
-        lg_text = "No Languages Found!"
+        lg_text = "Hindi"
     if countries:
         if len(countries) > 1:
             ct_text = ', '.join(countries)
         else:
             ct_text = countries[0]
     else:
-        ct_text = "No Country Found!"
+        ct_text = "Not Mentioned on IMDB"
     return ct_text, lg_text
 
 
@@ -272,9 +289,15 @@ if userge.has_bot:
                 )
             )
         resfo = srch_results.get("q")
-        await inline_query.answer(results=oorse,
-                                  switch_pm_text=f"Found {len(oorse)} results for {resfo}",
-                                  switch_pm_parameter="imdb")
+        await inline_query.answer(
+            results=oorse,
+            cache_time=300,
+            is_gallery=False,
+            is_personal=False,
+            next_offset="",
+            switch_pm_text=f"Found {len(oorse)} results for {resfo}",
+            switch_pm_parameter="imdb"
+        )
         inline_query.stop_propagation()
 
 
