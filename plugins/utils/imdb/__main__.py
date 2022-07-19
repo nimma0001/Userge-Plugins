@@ -72,6 +72,7 @@ async def _imdb(message: Message):
         )
         await message.delete()
     elif image_link is not None:
+        os.remove(THUMB_PATH)
         fb = open(THUMB_PATH,'wb')
         fb.write(urllib.request.urlopen(image_link).read())
         fb.close()
