@@ -103,7 +103,7 @@ async def get_movie_description(imdb_id, max_length):
         yt_link = f"https://m.youtube.com/watch?v={yt_code}"
     except (IndexError, json.JSONDecodeError, AttributeError):
         yt_code = soup.get("trailer_vid_id")
-        yt_link = f"https://m.imdb.com/video/vi1027457561/{yt_code}"
+        yt_link = f"https://m.imdb.com/video/{yt_code}"
     except (IndexError, json.JSONDecodeError, AttributeError):
         yt_link = f"Couldn't Find"
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
