@@ -74,7 +74,7 @@ async def _imdb(message: Message):
     elif image_link is not None:
         fb = open(THUMB_PATH,'wb')
         fb.write(urllib.request.urlopen(image_link).read())
-        f.close()
+        fb.close()
         await message.client.send_photo(
             chat_id=message.chat.id,
             photo=THUMB_PATH,
