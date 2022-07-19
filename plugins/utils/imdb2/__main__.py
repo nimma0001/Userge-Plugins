@@ -92,8 +92,12 @@ async def get_movie_description(imdb_id, max_length):
     soup = json.loads(response.text)
     try: 
         yt_code = soup2.get("results")[0].get("key")
+        yt_link = f"https://m.youtube.com/watch?v={yt_code}"
     except (IndexError, json.JSONDecodeError, AttributeError):
-        yt_code = ""
+        yt_code = soup.get("trailer_vid_id")
+        yt_link = f"https://m.imdb.com/video/vi1027457561/{yt_code}"
+    except (IndexError, json.JSONDecodeError, AttributeError):
+        yt_link = f"Couldn't Find"
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup.get('title')
     year = soup.get("year")
@@ -128,7 +132,7 @@ async def get_movie_description(imdb_id, max_length):
 <b>Release date : </b><code>{year}</code>
 <b>Resolution : 480,720,1080</b>
 <b>IMDB :</b> https://www.imdb.com/title/{imdb_id}
-<b>YOUTUBE TRAILER 🎦 : </b> https://m.youtube.com/watch?v={yt_code}
+<b>YOUTUBE TRAILER 🎦 : </b> <code>{yt_link}</code>
 <b>Story Line : </b><em>{story_line}</em>
 <b>Available On : 👇👇👇👇 </b>"""
 
