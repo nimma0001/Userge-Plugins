@@ -28,6 +28,7 @@ from userge import userge, Message, config, pool
 from .. import imdb
 
 THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
+TMDB_KEY = "5dae31e75ff0f7a0befc272d5deadd73"
 
 
 @userge.on_cmd("imdb", about={
@@ -86,8 +87,10 @@ async def _imdb(message: Message):
 
 async def get_movie_description(imdb_id, max_length):
     response = await _get("https://i-m-d-b.herokuapp.com/?tt="+imdb_id)
+    response2 = await _get("http://api.themoviedb.org/3/movie/"+imdb_id+"/videos?api_key="+TMDB_KEY)
+    soup2 = json.loads(response2.text
     soup = json.loads(response.text)
-
+    yt_code = soup.get("results")[0].get("key")
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup.get('title')
     year = soup.get("year")
@@ -122,6 +125,7 @@ async def get_movie_description(imdb_id, max_length):
 <b>Release date : </b><code>{year}</code>
 <b>Resolution : 480,720,1080</b>
 <b>IMDB :</b> https://www.imdb.com/title/{imdb_id}
+<b>YOUTUBE TRAILER : </b> f"https://m.youtube.com/watch?v={yt_code}"
 <b>Story Line : </b><em>{story_line}</em>
 <b>Available On : 👇👇👇👇 </b>"""
 
