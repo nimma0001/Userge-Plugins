@@ -66,7 +66,7 @@ async def _imdb(message: Message):
     if os.path.exists(THUMB_PATH):
         os.remove(THUMB_PATH)
         fb = open(THUMB_PATH,'wb')
-        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX720")).read())
+        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX480")).read())
         fb.close()
         await message.client.send_photo(
             chat_id=message.chat.id,
@@ -77,7 +77,7 @@ async def _imdb(message: Message):
         await message.delete()
     elif image_link is not None:
         fb = open(THUMB_PATH,'wb')
-        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX720")).read())
+        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX480")).read())
         fb.close()
         await message.client.send_photo(
             chat_id=message.chat.id,
