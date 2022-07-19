@@ -90,7 +90,10 @@ async def get_movie_description(imdb_id, max_length):
     response2 = await _get("http://api.themoviedb.org/3/movie/"+imdb_id+"/videos?api_key="+TMDB_KEY)
     soup2 = json.loads(response2.text)
     soup = json.loads(response.text)
-    yt_code = soup2.get("results")[0].get("key")
+    try: 
+        yt_code = soup2.get("results")[0].get("key")
+    except (IndexError, json.JSONDecodeError, AttributeError):
+        yt_code = ""
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup.get('title')
     year = soup.get("year")
