@@ -87,9 +87,11 @@ async def _imdb(message: Message):
 
 async def get_movie_description(imdb_id, max_length):
     response = await _get(imdb.API_TWO_URL.format(imdbttid=imdb_id))
+    response2 = await _get(http://api.themoviedb.org/3/movie/{imdbid}/videos?api_key=5dae31e75ff0f7a0befc272d5deadd73)
     soup = json.loads(response.text)
 
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
+    trailer = f"https://m.youtube.com/watch?v={yt_code}"
     mov_name = soup.get('title')
     image_link = soup.get('poster')
     genres = soup.get("genres")
