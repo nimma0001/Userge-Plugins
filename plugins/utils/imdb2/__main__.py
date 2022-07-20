@@ -94,9 +94,9 @@ async def _imdb(message: Message):
         )
 
 async def get_movie_description(imdb_id, max_length):
-    response = _get("https://i-m-d-b.herokuapp.com/?tt="+imdbid)
+    response = _get("https://i-m-d-b.herokuapp.com/?tt="+imdb_id)
     soup = json.loads(response.text)
-    response2 = _get("http://api.themoviedb.org/3/movie/"+imdbid+"/videos?api_key="+TMDB_KEY)
+    response2 = _get("http://api.themoviedb.org/3/movie/"+imdb_id+"/videos?api_key="+TMDB_KEY)
     soup2 = json.loads(response2.text)
     try:
         soup2.get("results")[0].get("key")
