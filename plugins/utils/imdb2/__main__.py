@@ -14,7 +14,6 @@ from apiclient.discovery import build
 from urllib.parse import urlparse
 import urllib.request
 from pyrogram import enums
-request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
 import requests
 from pyrogram import filters
 from pyrogram.types import (
@@ -32,6 +31,8 @@ THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
 TMDB_KEY = "5dae31e75ff0f7a0befc272d5deadd73"
 api_key = "AIzaSyA3VaZAgxEaGOc0kZJ_Cc40thm4Nha3o_M"
 youtube = build('youtube','v3',developerKey = api_key)
+request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
+
 
 
 @userge.on_cmd("imdb", about={
