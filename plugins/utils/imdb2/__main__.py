@@ -95,8 +95,11 @@ async def _imdb(message: Message):
 
 async def get_movie_description(imdb_id, max_length):
     response = await _get("https://i-m-d-b.herokuapp.com/?tt="+imdb_id)
-    response2 = await _get("http://api.themoviedb.org/3/movie/"+imdb_id+"/videos?api_key="+TMDB_KEY)
-    soup2 = json.loads(response2.text)
+    try:
+        response2 = await _get("http://api.themoviedb.org/3/movie/"+imdb_id+"/videos?api_key="+TMDB_KEY)
+        soup2 = json.loads(response2.text)
+    except (IndexError, json.JSONDecodeError, AttributeError):
+        response2 = "nope"
     soup = json.loads(response.text)
     try: 
         yt_code = soup2.get("results")[0].get("key")
