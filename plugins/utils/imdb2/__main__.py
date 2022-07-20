@@ -32,7 +32,7 @@ THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
 TMDB_KEY = "5dae31e75ff0f7a0befc272d5deadd73"
 
 
-@userge.on_cmd("imdb2", about={
+@userge.on_cmd("imdb", about={
     'header': "Scrap Movies & Tv Shows from IMDB",
     'description': "Get info about a Movie on IMDB.\n"
                    "[NOTE: To use a custom poster, download "
