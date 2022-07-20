@@ -31,7 +31,6 @@ THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
 TMDB_KEY = "5dae31e75ff0f7a0befc272d5deadd73"
 api_key = "AIzaSyA3VaZAgxEaGOc0kZJ_Cc40thm4Nha3o_M"
 youtube = build('youtube','v3',developerKey = api_key)
-request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
 
 
 
@@ -107,6 +106,7 @@ async def get_movie_description(imdb_id, max_length):
     except (IndexError, json.JSONDecodeError, AttributeError, TypeError):
         if soup.get("trailer_vid_id") == None:
             YT_NAME = soup.get('title') + " trailer hindi"
+            request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
             YTFIND = request.execute()
             YTID = YTFIND['items'][0]["id"]
             yt_link = f"https://m.youtube.com/watch?v={YTID}"
