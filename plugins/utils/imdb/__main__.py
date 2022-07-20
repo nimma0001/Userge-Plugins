@@ -146,7 +146,7 @@ async def get_movie_description(imdb_id, max_length):
 <b>Story Line : </b><em>{story_line}</em>
 <b>Available On : 👇👇👇👇 </b>"""
 
-    povas = await search_jw(mov_name, imdb.WATCH_COUNTRY)
+    povas = await search_jw()
     if len(description + povas) > max_length:
         inc = max_length - len(description + povas)
         description = description[:inc - 3].strip() + "..."
@@ -300,7 +300,7 @@ if userge.has_bot:
         inline_query.stop_propagation()
 
 
-async def search_jw(movie_name: str, locale: str):
+async def search_jw():
     m_t_ = ""
     response = await _get("https://justwatch.imdbot.workers.dev/?q={movie_name}&L={locale}")
     soup = json.loads(response.text)
