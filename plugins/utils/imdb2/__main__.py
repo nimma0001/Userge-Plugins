@@ -10,10 +10,11 @@
 
 import json
 import os
+from apiclient.discovery import build
 from urllib.parse import urlparse
 import urllib.request
 from pyrogram import enums
-
+request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
 import requests
 from pyrogram import filters
 from pyrogram.types import (
@@ -27,9 +28,10 @@ from pyrogram.types import (
 
 from userge import userge, Message, config, pool
 from .. import imdb
-
 THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
 TMDB_KEY = "5dae31e75ff0f7a0befc272d5deadd73"
+api_key = "AIzaSyA3VaZAgxEaGOc0kZJ_Cc40thm4Nha3o_M"
+youtube = build('youtube','v3',developerKey = api_key)
 
 
 @userge.on_cmd("imdb", about={
@@ -103,7 +105,10 @@ async def get_movie_description(imdb_id, max_length):
         yt_link = f"https://m.youtube.com/watch?v={yt_code}"
     except (IndexError, json.JSONDecodeError, AttributeError, TypeError):
         if soup.get("trailer_vid_id") == None:
-            yt_link = f"Couldn't Find"
+            YT_NAME = soup.get('title') + " trailer hindi"
+            YTFIND = request.execute()
+            YTID = YTFIND['items'][0]["id"]
+            yt_link = f"https://m.youtube.com/watch?v={YTID}"
         else:
             yt_code = soup.get("trailer_vid_id")
             yt_link = f"https://m.imdb.com/video/{yt_code}"
