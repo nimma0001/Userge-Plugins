@@ -302,7 +302,7 @@ if userge.has_bot:
 
 async def search_jw(movie_name: str, locale: str):
     m_t_ = ""
-    response = await _get(https://justwatch.imdbot.workers.dev/?q={movie_name}&L={locale})
+    response = await _get("https://justwatch.imdbot.workers.dev/?q={movie_name}&L={locale}")
     soup = json.loads(response.text)
     items = soup["items"]
     for item in items:
