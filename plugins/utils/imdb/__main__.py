@@ -33,7 +33,7 @@ TMDB_KEY = "5dae31e75ff0f7a0befc272d5deadd73"
 api_key = "AIzaSyA3VaZAgxEaGOc0kZJ_Cc40thm4Nha3o_M"
 youtube = build('youtube','v3',developerKey = api_key)
 
-@userge.on_cmd("imdb", about={
+@userge.on_cmd("imdb2", about={
     'header': "Scrap Movies & Tv Shows from IMDB",
     'description': "Get info about a Movie on IMDB.\n"
                    "[NOTE: To use a custom poster, download "
