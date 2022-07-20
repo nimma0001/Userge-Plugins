@@ -108,7 +108,7 @@ async def get_movie_description(imdb_id, max_length):
             YT_NAME = soup.get('title') + " trailer hindi"
             request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
             YTFIND = request.execute()
-            YTID = YTFIND['items'][0]["id"]
+            YTID = YTFIND['items'][0]["id"]["videoId"]
             yt_link = f"https://m.youtube.com/watch?v={YTID}"
         else:
             yt_code = soup.get("trailer_vid_id")
