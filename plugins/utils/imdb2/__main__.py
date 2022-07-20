@@ -94,21 +94,21 @@ async def _imdb(message: Message):
         )
 
 async def get_movie_description(imdb_id, max_length):
-    response = await _get("https://i-m-d-b.herokuapp.com/?tt="+imdb_id)
-    try:
-        response2 = await _get("http://api.themoviedb.org/3/movie/"+imdb_id+"/videos?api_key="+TMDB_KEY)
-        soup2 = json.loads(response2.text)
-    except (IndexError, json.JSONDecodeError, AttributeError):
-        soup2 = "nope"
+    response = _get("https://i-m-d-b.herokuapp.com/?tt="+imdbid)
     soup = json.loads(response.text)
-    try: 
+    response2 = _get("http://api.themoviedb.org/3/movie/"+imdbid+"/videos?api_key="+TMDB_KEY)
+    soup2 = json.loads(response2.text)
+    try:
+        soup2.get("results")[0].get("key")
         yt_code = soup2.get("results")[0].get("key")
         yt_link = f"https://m.youtube.com/watch?v={yt_code}"
-    except (IndexError, json.JSONDecodeError, AttributeError):
-        yt_code = soup.get("trailer_vid_id")
-        yt_link = f"https://m.imdb.com/video/{yt_code}"
-    except (IndexError, json.JSONDecodeError, AttributeError):
-        yt_link = f"Couldn't Find"
+    except (IndexError, json.JSONDecodeError, AttributeError, NameError, TypeError):
+        if soup.get("trailer_vid_id") == None: 
+            yt_code = f"Couldn't Find"
+            yt_link = f"Couldn't Find"
+        else:
+            yt_code = soup.get("trailer_vid_id")
+            yt_link = f"https://m.imdb.com/video/{yt_code}"
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup.get('title')
     year = soup.get("year")
@@ -211,7 +211,7 @@ def _get(url: str, attempts: int = 0) -> requests.Response:
     while True:
         abc = requests.get(url)
         if attempts > 5:
-            raise IndexError
+            return abc
         if abc.status_code == 200:
             break
         attempts += 1
