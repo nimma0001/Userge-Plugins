@@ -103,16 +103,12 @@ async def get_movie_description(imdb_id, max_length):
     try: 
         yt_code = soup2.get("results")[0].get("key")
         yt_link = f"https://m.youtube.com/watch?v={yt_code}"
-    except (IndexError, json.JSONDecodeError, AttributeError, TypeError):
-        if soup.get("trailer_vid_id") == None:
-            YT_NAME = soup.get('title') + " trailer hindi"
-            request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
-            YTFIND = request.execute()
-            YTID = YTFIND['items'][0]["id"]["videoId"]
-            yt_link = f"https://m.youtube.com/watch?v={YTID}"
-        else:
-            yt_code = soup.get("trailer_vid_id")
-            yt_link = f"https://m.imdb.com/video/{yt_code}"
+    except (IndexError, json.JSONDecodeError, AttributeError, TypeError)
+        YT_NAME = soup.get('title') + " trailer hindi"
+        request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
+        YTFIND = request.execute()
+        YTID = YTFIND['items'][0]["id"]["videoId"]
+        yt_link = f"https://m.youtube.com/watch?v={YTID}"
         
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup.get('title')
