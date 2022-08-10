@@ -136,12 +136,12 @@ async def get_movie_description(imdb_id, max_length):
 <b>Rating⭐: </b><code>{mov_rating}</code>
 <b>Country🗺: </b><code>{mov_country}</code>
 <b>Language: </b><code>{mov_language}</code>
-<b>Duration : </b><code>{duration}</code>
+<b>Duration⏳: </b><code>{duration}</code>
 <b>Cast Info🎗: </b>
 <b>Director📽: </b><code>{director}</code>
 <b>Writer📄: </b><code>{writer}</code>
 <b>Stars🎭: </b><code>{stars}</code>
-<b>Release date : </b><code>{year}</code>
+<b>Release date📅: </b><code>{year}</code>
 <b>Resolution : 480,720,1080</b>
 <b>IMDB :</b> https://www.imdb.com/title/{imdb_id}
 <b>YOUTUBE TRAILER 🎦 : </b> {yt_link}
