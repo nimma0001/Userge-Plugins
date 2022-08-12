@@ -114,7 +114,7 @@ async def get_movie_description(imdb_id, max_length):
     mov_name = soup.get('title')
     year = soup.get("year")
     if year:
-        
+        pass  
     else:
         year = soup.get("release_date")
         year = year["NAME"]
