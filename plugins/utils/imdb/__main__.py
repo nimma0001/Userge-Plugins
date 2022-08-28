@@ -59,7 +59,9 @@ async def _imdb(message: Message):
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
     except (IndexError, json.JSONDecodeError, AttributeError):
-        mov_imdb_id = srch_results.get("d")[1].get("id")
+        mov_imdb = srch_results.get("tt_url")
+        mov_imdb_i = mov_imdb.split("/")
+        mov_imdb_id = mov_imdb_i[4]
         image_link, description = await get_movie_description(
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
