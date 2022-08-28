@@ -53,7 +53,7 @@ async def _imdb(message: Message):
         response = await _get("https://i-m-d-b.herokuapp.com/?q="+movie_name)
         srch_results = json.loads(response.text)
         mov_imdb = srch_results.get("1").get("tt_url")
-        mov_imdb_i = mov_imdb_i.split("/")
+        mov_imdb_i = mov_imdb.split("/")
         mov_imdb_id = mov_imdb_i[4]
         image_link, description = await get_movie_description(
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
