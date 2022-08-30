@@ -68,7 +68,7 @@ async def _imdb(message: Message):
             )
         except (IndexError, json.JSONDecodeError, AttributeError):
             await message.edit("check spelling or movie not available on imdb")
-    return
+            return
 
     if os.path.exists(THUMB_PATH):
         os.remove(THUMB_PATH)
