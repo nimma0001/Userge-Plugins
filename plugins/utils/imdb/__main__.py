@@ -34,7 +34,7 @@ youtube = build('youtube','v3',developerKey = api_key)
 
 
 
-@userge.on_cmd("imdb2", about={
+@userge.on_cmd("imdb", about={
     'header': "Scrap Movies & Tv Shows from IMDB",
     'description': "Get info about a Movie on IMDB.\n"
                    "[NOTE: To use a custom poster, download "
