@@ -42,11 +42,7 @@ youtube = build('youtube','v3',developerKey = api_key)
     'usage': "{tr}imdb [Movie Name]",
     'use inline': "@botusername imdb [Movie Name]"})
 async def _imdb(message: Message):
-    if not (imdb.API_ONE_URL or imdb.API_TWO_URL):
-        return await message.err(
-            "First set [these two vars](https://t.me/UsergePlugins/127) before using imdb",
-            disable_web_page_preview=True
-        )
+    
     try:
         movie_name = message.input_str
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
