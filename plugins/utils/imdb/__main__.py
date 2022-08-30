@@ -34,7 +34,7 @@ youtube = build('youtube','v3',developerKey = api_key)
 
 
 
-@userge.on_cmd("imdb2", about={
+@userge.on_cmd("imdb", about={
     'header': "Scrap Movies & Tv Shows from IMDB",
     'description': "Get info about a Movie on IMDB.\n"
                    "[NOTE: To use a custom poster, download "
@@ -59,15 +59,16 @@ async def _imdb(message: Message):
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
     except (IndexError, json.JSONDecodeError, AttributeError):
-        mov_imdb = srch_results.get("tt_url")
-        mov_imdb_i = mov_imdb.split("/")
-        mov_imdb_id = mov_imdb_i[4]
-        image_link, description = await get_movie_description(
-            mov_imdb_id, config.MAX_MESSAGE_LENGTH
-        )
-    except (IndexError, json.JSONDecodeError, AttributeError):
-        await message.edit("check spelling or movie not available on imdb")
-        return
+        try:
+            mov_imdb = srch_results.get("tt_url")
+            mov_imdb_i = mov_imdb.split("/")
+            mov_imdb_id = mov_imdb_i[4]
+            image_link, description = await get_movie_description(
+                mov_imdb_id, config.MAX_MESSAGE_LENGTH
+            )
+        except (IndexError, json.JSONDecodeError, AttributeError):
+            await message.edit("check spelling or movie not available on imdb")
+    return
 
     if os.path.exists(THUMB_PATH):
         os.remove(THUMB_PATH)
@@ -83,7 +84,7 @@ async def _imdb(message: Message):
         await message.delete()
     elif image_link is not None:
         fb = open(THUMB_PATH,'wb')
-        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX480")).read())
+        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX720")).read())
         fb.close()
         await message.client.send_photo(
             chat_id=message.chat.id,
@@ -108,22 +109,23 @@ async def get_movie_description(imdb_id, max_length):
         yt_code = soup2.get("results")[0].get("key")
         yt_link = f"https://m.youtube.com/watch?v={yt_code}"
     except (IndexError, json.JSONDecodeError, AttributeError, TypeError):
-        if soup.get("trailer_vid_id") == None:
-            YT_NAME = soup.get('title') + " trailer"
-            request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
-            YTFIND = request.execute()
-            YTID = YTFIND['items'][0]["id"]["videoId"]
-            yt_link = f"https://m.youtube.com/watch?v={YTID}"
-        else:
-            yt_code = soup.get("trailer_vid_id")
-            yt_link = f"https://m.imdb.com/video/{yt_code}"
+        YT_NAME = soup.get('title') + " Official TRAILER"
+        request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
+        YTFIND = request.execute()
+        YTID = YTFIND['items'][0]["id"]["videoId"]
+        yt_link = f"https://m.youtube.com/watch?v={YTID}"
         
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup.get('title')
-    year = soup.get("year")
     image_link = soup.get('poster')
     genres = soup.get("genres")
     duration = soup.get("duration")
+    year = soup.get("year")
+    if year:
+        pass  
+    else:
+        year = soup.get("release_date")
+        year = year["NAME"]
     mov_rating = soup.get("UserRating").get("rating")
     if mov_rating.strip() == '/':
         mov_rating = "<code>Ratings not found!</code>"
@@ -144,12 +146,12 @@ async def get_movie_description(imdb_id, max_length):
 <b>Rating⭐: </b><code>{mov_rating}</code>
 <b>Country🗺: </b><code>{mov_country}</code>
 <b>Language: </b><code>{mov_language}</code>
-<b>Duration : </b><code>{duration}</code>
+<b>Duration⏳: </b><code>{duration}</code>
 <b>Cast Info🎗: </b>
 <b>Director📽: </b><code>{director}</code>
 <b>Writer📄: </b><code>{writer}</code>
 <b>Stars🎭: </b><code>{stars}</code>
-<b>Release date : </b><code>{year}</code>
+<b>Release Year📅: </b><code>{year}</code>
 <b>Resolution : 480,720,1080</b>
 <b>IMDB :</b> https://www.imdb.com/title/{imdb_id}
 <b>YOUTUBE TRAILER 🎦 : </b> {yt_link}
