@@ -44,9 +44,7 @@ youtube = build('youtube','v3',developerKey = api_key)
 async def _imdb(message: Message):
     
     try:
-        movie_na = message.input_str
-        movie_nam = movie_na.split('|')
-        movie_name = movie_nam[0]
+        movie_name = message.input_str
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
         response = await _get("https://i-m-d-b.herokuapp.com/?q="+movie_name)
         srch_results = json.loads(response.text)
@@ -150,7 +148,7 @@ async def get_movie_description(imdb_id, max_length):
 <b>Writer📄: </b><code>{writer}</code>
 <b>Stars🎭: </b><code>{stars}</code>
 <b>Release Year📅: </b><code>{year}</code>
-<b>Resolution : </b><code>{movie_nam[1]}</code>
+<b>Resolution : 480,720,1080 </b>
 <b>IMDB :</b> https://www.imdb.com/title/{imdb_id}
 <b>YOUTUBE TRAILER 🎦 : </b> {yt_link}
 <b>Story Line : </b><em>{story_line}</em>
