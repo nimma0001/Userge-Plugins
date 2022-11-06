@@ -97,12 +97,11 @@ async def _imdb(message: Message):
 
 async def get_movie_description(imdb_id, max_length):
     response = await _get("https://i-m-d-b.herokuapp.com/?tt="+imdb_id)
-    response2 = await _get("http://api.themoviedb.org/3/movie/"+imdb_id+"/videos?api_key="+TMDB_KEY)
+    response2 = await _get("https://imdb-api.com/en/API/YouTubeTrailer/k_4ll239x1/tt"+imdb_id)
     soup2 = json.loads(response2.text)
     soup = json.loads(response.text)
     try: 
-        yt_code = soup2.get("results")[0].get("key")
-        yt_link = f"https://m.youtube.com/watch?v={yt_code}"
+        yt_link = soup2.get("videoUrl")
     except (IndexError, json.JSONDecodeError, AttributeError, TypeError):
         YT_NAME = soup.get('title') + " Official TRAILER" + " Hindi"
         request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
