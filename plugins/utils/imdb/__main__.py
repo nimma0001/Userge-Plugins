@@ -39,37 +39,36 @@ youtube = build('youtube','v3',developerKey = api_key)
     'description': "Get info about a Movie on IMDB.\n"
                    "[NOTE: To use a custom poster, download "
                    "the poster with name imdb_thumb.jpg]",
-    'usage': "{tr}imdb2 [Movie Name | res | Hindi Eng]",
+    'usage': "{tr}imdb [Movie Name]",
     'use inline': "@botusername imdb [Movie Name]"})
 async def _imdb(message: Message):
-    
+    if not (imdb.API_ONE_URL or imdb.API_TWO_URL):
+        return await message.err(
+            "First set [these two vars](https://t.me/UsergePlugins/127) before using imdb",
+            disable_web_page_preview=True
+        )
     try:
         movie_name = message.input_str
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-        response = await _get("https://i-m-d-b.herokuapp.com/?q="+movie_name)
+        response = await _get("https://betterimdbot.herokuapp.com/search.php?_="+movie_name)
         srch_results = json.loads(response.text)
-        mov_imdb = srch_results.get("1").get("tt_url")
-        mov_imdb_i = mov_imdb.split("/")
-        mov_imdb_id = mov_imdb_i[4]
+        mov_imdb_id = srch_results.get("d")[0].get("id")
         image_link, description = await get_movie_description(
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
     except (IndexError, json.JSONDecodeError, AttributeError):
-        try:
-            mov_imdb = srch_results.get("tt_url")
-            mov_imdb_i = mov_imdb.split("/")
-            mov_imdb_id = mov_imdb_i[4]
-            image_link, description = await get_movie_description(
-                mov_imdb_id, config.MAX_MESSAGE_LENGTH
-            )
-        except (IndexError, json.JSONDecodeError, AttributeError):
-            await message.edit("check spelling or movie not available on imdb")
-            return
+        mov_imdb_id = srch_results.get("d")[1].get("id")
+        image_link, description = await get_movie_description(
+            mov_imdb_id, config.MAX_MESSAGE_LENGTH
+        )
+    except (IndexError, json.JSONDecodeError, AttributeError):
+        await message.edit("check spelling or movie not available on imdb")
+        return
 
     if os.path.exists(THUMB_PATH):
         os.remove(THUMB_PATH)
         fb = open(THUMB_PATH,'wb')
-        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX480")).read())
+        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX360")).read())
         fb.close()
         await message.client.send_photo(
             chat_id=message.chat.id,
@@ -98,14 +97,13 @@ async def _imdb(message: Message):
 
 async def get_movie_description(imdb_id, max_length):
     response = await _get("https://i-m-d-b.herokuapp.com/?tt="+imdb_id)
-    response2 = await _get("http://api.themoviedb.org/3/movie/"+imdb_id+"/videos?api_key="+TMDB_KEY)
+    response2 = await _get("https://imdb-api.com/en/API/YouTubeTrailer/k_4ll239x1/tt"+imdb_id)
     soup2 = json.loads(response2.text)
     soup = json.loads(response.text)
     try: 
-        yt_code = soup2.get("results")[0].get("key")
-        yt_link = f"https://m.youtube.com/watch?v={yt_code}"
+        yt_link = soup2.get("videoUrl")
     except (IndexError, json.JSONDecodeError, AttributeError, TypeError):
-        YT_NAME = soup.get('title') + " Official TRAILER"
+        YT_NAME = soup.get('title') + " Official TRAILER" + " Hindi"
         request = youtube.search().list(q=YT_NAME,part='snippet',type='video',maxResults=1)
         YTFIND = request.execute()
         YTID = YTFIND['items'][0]["id"]["videoId"]
@@ -148,7 +146,7 @@ async def get_movie_description(imdb_id, max_length):
 <b>Writer📄: </b><code>{writer}</code>
 <b>Stars🎭: </b><code>{stars}</code>
 <b>Release Year📅: </b><code>{year}</code>
-<b>Resolution : 480,720,1080 </b>
+<b>Resolution : 480,720,1080</b>
 <b>IMDB :</b> https://www.imdb.com/title/{imdb_id}
 <b>YOUTUBE TRAILER 🎦 : </b> {yt_link}
 <b>Story Line : </b><em>{story_line}</em>
@@ -351,3 +349,4 @@ def get_provider(url):
 
     netloc = urlparse(url).netloc
     return pretty(netloc.split('.'))
+set 限制解除 
