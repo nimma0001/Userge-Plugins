@@ -110,7 +110,7 @@ async def get_movie_description(imdb_id, max_length):
         yt_link = f"https://m.youtube.com/watch?v={YTID}"
         
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
-    mov_name = soup.get('title')
+    mov_name = soup['title']
     image_link = soup.get('thumbnailUrl')
     genres = soup.get("genres")
     duration = soup.get("runtimeStr")
