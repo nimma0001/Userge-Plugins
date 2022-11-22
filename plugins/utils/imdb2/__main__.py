@@ -177,9 +177,9 @@ def get_countries_and_languages(soup):
 
 
 def get_credits_text(soup):
-    direc = pg.get("directors")
-    writer = pg.get("writers")
-    actor = pg.get("stars")
+    direc = soup.get("directors")
+    writer = soup.get("writers")
+    actor = soup.get("stars")
     if direc:
         if len(direc) > 1:
             director = ', '.join([x["NAME"] for x in direc])
