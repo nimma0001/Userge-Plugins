@@ -35,12 +35,12 @@ youtube = build('youtube','v3',developerKey = api_key)
 
 
 @userge.on_cmd("imdb2", about={
-    'header': "Scrap Movies & Tv Shows from IMDB",
+    'header': "Scrap Movies2 & Tv Shows from IMDB",
     'description': "Get info about a Movie on IMDB.\n"
                    "[NOTE: To use a custom poster, download "
                    "the poster with name imdb_thumb.jpg]",
-    'usage': "{tr}imdb [Movie Name]",
-    'use inline': "@botusername imdb [Movie Name]"})
+    'usage': "{tr}imd2b [Movie Name]",
+    'use inline': "@botusername imd2b [Movie Name]"})
 async def _imdb(message: Message):
     if not (imdb.API_ONE_URL or imdb.API_TWO_URL):
         return await message.err(
@@ -68,7 +68,7 @@ async def _imdb(message: Message):
     if os.path.exists(THUMB_PATH):
         os.remove(THUMB_PATH)
         fb = open(THUMB_PATH,'wb')
-        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX360")).read())
+        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX720")).read())
         fb.close()
         await message.client.send_photo(
             chat_id=message.chat.id,
@@ -118,7 +118,8 @@ async def get_movie_description(imdb_id, max_length):
     if year:
         pass  
     else:
-        year = "not found"
+        year = soup.get("release_date")
+        year = year["NAME"]
     mov_rating = soup.get("UserRating").get("rating")
     if mov_rating.strip() == '/':
         mov_rating = "<code>Ratings not found!</code>"
@@ -348,4 +349,3 @@ def get_provider(url):
 
     netloc = urlparse(url).netloc
     return pretty(netloc.split('.'))
-set 限制解除 
