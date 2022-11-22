@@ -118,8 +118,7 @@ async def get_movie_description(imdb_id, max_length):
     if year:
         pass  
     else:
-        year = soup.get("release_date")
-        year = year["NAME"]
+        year = "not found"
     mov_rating = soup.get("UserRating").get("rating")
     if mov_rating.strip() == '/':
         mov_rating = "<code>Ratings not found!</code>"
