@@ -153,30 +153,30 @@ async def get_movie_description(imdb_id, max_length):
 
 
 def get_countries_and_languages(soup):
-    languages = soup["languages"]
-    countries = soup["countries"]
-    lg_text = ""
-    if languages:
-        if len(languages) > 1:
-            lg_text = ', '.join(languages)
-        else:
-            lg_text = languages[0]
-    else:
-        lg_text = "Hindi"
-    if countries:
-        if len(countries) > 1:
-            ct_text = ', '.join(countries)
-        else:
-            ct_text = countries[0]
-    else:
-        ct_text = "Not Mentioned on IMDB"
+    try:
+        lg_text = soup["languages"]
+    except:
+        lg_text = "not found"
+    try:
+        ct_text = soup["countries"]
+    except:
+        ct_text = 'Not Found'
     return ct_text, lg_text
 
 
 def get_credits_text(soup):
-    direc = soup["directors"]
-    writer = soup["writers"]
-    actor = soup["stars"]
+    try:
+        direc = soup["directors"]
+    except:
+        direc = 'Not Found'
+    try:
+        writer = soup["writers"]
+    except:
+        writer = "Not Found"
+    try: 
+        actor = soup["stars"]
+    except:
+        actor= "Not Found"
     
     return director, writers, actors
 
