@@ -121,16 +121,13 @@ async def get_movie_description(imdb_id, max_length):
         year = "not found"
     mov_rating = soup.get("imDbRating")
 
-    if duration:
-        genres.append(duration)
-
     mov_country, mov_language = get_countries_and_languages(soup)
     director, writer, stars = get_credits_text(soup)
     story_line = soup.get("plot", 'Not available')
 
     description = f"<b>Title</b><a href='{image_link}'>🎬</a>: <code>{mov_name}</code>"
     description += f"""
-<b>>Genres: </b><code>{' '.join(genres) if len(genres) > 0 else ''}</code>
+<b>>Genres: </b><code>{genres}</code>
 <b>Rating⭐: </b><code>{mov_rating}</code>
 <b>Country🗺: </b><code>{mov_country}</code>
 <b>Language: </b><code>{mov_language}</code>
