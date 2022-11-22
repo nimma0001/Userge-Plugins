@@ -111,19 +111,19 @@ async def get_movie_description(imdb_id, max_length):
         
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup['title']
-    image_link = soup.get('thumbnailUrl')
-    genres = soup.get("genres")
-    duration = soup.get("runtimeStr")
-    year = soup.get("year")
+    image_link = soup['thumbnailUrl']
+    genres = soup["genres"]
+    duration = soup["runtimeStr"]
+    year = soup["year"]
     if year:
         pass  
     else:
         year = "not found"
-    mov_rating = soup.get("imDbRating")
+    mov_rating = soup["imDbRating"]
 
     mov_country, mov_language = get_countries_and_languages(soup)
     director, writer, stars = get_credits_text(soup)
-    story_line = soup.get("plot", 'Not available')
+    story_line = soup["plot"]
 
     description = f"<b>Title</b><a href='{image_link}'>🎬</a>: <code>{mov_name}</code>"
     description += f"""
@@ -153,8 +153,8 @@ async def get_movie_description(imdb_id, max_length):
 
 
 def get_countries_and_languages(soup):
-    languages = soup.get("languages")
-    countries = soup.get("countries")
+    languages = soup["languages"]
+    countries = soup["countries"]
     lg_text = ""
     if languages:
         if len(languages) > 1:
@@ -174,30 +174,10 @@ def get_countries_and_languages(soup):
 
 
 def get_credits_text(soup):
-    direc = soup.get("directors")
-    writer = soup.get("writers")
-    actor = soup.get("stars")
-    if direc:
-        if len(direc) > 1:
-            director = ', '.join([x["NAME"] for x in direc])
-        else:
-            director = direc[0]["NAME"]
-    else:
-        director = "No Director Found!"
-    if writer:
-        if len(writer) > 1:
-            writers = ', '.join([x["NAME"] for x in writer])
-        else:
-            writers = writer[0]["NAME"]
-    else:
-        writers = "No Writer Found!"
-    if actor:
-        if len(actor) > 1:
-            actors = ', '.join([x["NAME"] for x in actor])
-        else:
-            actors = actor[0]["NAME"]
-    else:
-        actors = "No Actor Found!"
+    direc = soup["directors"]
+    writer = soup["writers"]
+    actor = soup["stars"]
+    
     return director, writers, actors
 
 
