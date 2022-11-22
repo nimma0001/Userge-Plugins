@@ -308,7 +308,7 @@ async def search_jw(movie_name: str, locale: str):
                     m_t_ = m_t_[:-2].strip()
                 break
         return m_t_
-     except:
+    except:
         return " "
         
 
