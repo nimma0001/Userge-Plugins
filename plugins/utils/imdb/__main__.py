@@ -323,21 +323,23 @@ async def search_jw(movie_name: str, locale: str):
     ))
     soup = json.loads(response.text)
     items = soup["items"]
-    for item in items:
-        if movie_name.lower() == item.get("title", "").lower():
-            offers = item.get("offers", [])
-            t_m_ = []
-            for offer in offers:
-                url = offer.get("urls").get("standard_web")
-                if url not in t_m_:
-                    p_o = get_provider(url)
-                    m_t_ += f"<a href='{url}'>{p_o}</a> | "
-                t_m_.append(url)
-            if m_t_ != "":
-                m_t_ = m_t_[:-2].strip()
-            break
-    return m_t_
-
+    try:
+        for item in items:
+            if movie_name.lower() == item.get("title", "").lower():
+                offers = item.get("offers", [])
+                t_m_ = []
+                for offer in offers:
+                    url = offer.get("urls").get("standard_web")
+                    if url not in t_m_:
+                        p_o = get_provider(url)
+                        m_t_ += f"<a href='{url}'>{p_o}</a> | "
+                    t_m_.append(url)
+                if m_t_ != "":
+                    m_t_ = m_t_[:-2].strip()
+                break
+        return m_t_
+     except:
+        return ""
 
 def get_provider(url):
 
