@@ -68,7 +68,7 @@ async def _imdb(message: Message):
     if os.path.exists(THUMB_PATH):
         os.remove(THUMB_PATH)
         fb = open(THUMB_PATH,'wb')
-        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX720")).read())
+        fb.write(urllib.request.urlopen(image_link.replace("V1_Ratio0.6975_AL_", "V1_UX720")).read())
         fb.close()
         await message.client.send_photo(
             chat_id=message.chat.id,
@@ -111,15 +111,15 @@ async def get_movie_description(imdb_id, max_length):
         
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
     mov_name = soup.get('title')
-    image_link = soup.get('poster')
+    image_link = soup.get('thumbnailUrl')
     genres = soup.get("genres")
-    duration = soup.get("duration")
+    duration = soup.get("runtimeStr")
     year = soup.get("year")
     if year:
         pass  
     else:
         year = "not found"
-    mov_rating = soup.get("UserRating").get("rating")
+    mov_rating = soup.get("imDbRating")
     if mov_rating.strip() == '/':
         mov_rating = "<code>Ratings not found!</code>"
     else:
@@ -131,7 +131,7 @@ async def get_movie_description(imdb_id, max_length):
 
     mov_country, mov_language = get_countries_and_languages(soup)
     director, writer, stars = get_credits_text(soup)
-    story_line = soup.get("summary").get("plot", 'Not available')
+    story_line = soup.get("plot", 'Not available')
 
     description = f"<b>Title</b><a href='{image_link}'>🎬</a>: <code>{mov_name}</code>"
     description += f"""
@@ -161,8 +161,8 @@ async def get_movie_description(imdb_id, max_length):
 
 
 def get_countries_and_languages(soup):
-    languages = soup.get("Language")
-    countries = soup.get("CountryOfOrigin")
+    languages = soup.get("languages")
+    countries = soup.get("countries")
     lg_text = ""
     if languages:
         if len(languages) > 1:
@@ -182,10 +182,9 @@ def get_countries_and_languages(soup):
 
 
 def get_credits_text(soup):
-    pg = soup.get("sum_mary")
-    direc = pg.get("Directors")
-    writer = pg.get("Writers")
-    actor = pg.get("Stars")
+    direc = pg.get("directors")
+    writer = pg.get("writers")
+    actor = pg.get("stars")
     if direc:
         if len(direc) > 1:
             director = ', '.join([x["NAME"] for x in direc])
