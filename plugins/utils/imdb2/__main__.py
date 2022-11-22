@@ -166,17 +166,17 @@ def get_countries_and_languages(soup):
 
 def get_credits_text(soup):
     try:
-        direc = soup["directors"]
+        director = soup["directors"]
     except:
-        direc = 'Not Found'
+        director = 'Not Found'
     try:
-        writer = soup["writers"]
+        writers = soup["writers"]
     except:
-        writer = "Not Found"
+        writers = "Not Found"
     try: 
-        actor = soup["stars"]
+        actors = soup["stars"]
     except:
-        actor= "Not Found"
+        actors= "Not Found"
     
     return director, writers, actors
 
