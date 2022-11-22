@@ -120,12 +120,7 @@ async def get_movie_description(imdb_id, max_length):
     else:
         year = "not found"
     mov_rating = soup.get("imDbRating")
-    if mov_rating.strip() == '/':
-        mov_rating = "<code>Ratings not found!</code>"
-    else:
-        users = soup.get("UserRating").get("numeric_description_only")
-        if users:
-            mov_rating += f" (based on {users} users)"
+
     if duration:
         genres.append(duration)
 
