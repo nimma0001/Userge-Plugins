@@ -96,7 +96,7 @@ async def _imdb(message: Message):
         )
 
 async def get_movie_description(imdb_id, max_length):
-    response = await _get("https://i-m-d-b.herokuapp.com/?tt="+imdb_id)
+    response = await _get("https://imdb-api.com/en/API/Title/k_4ll239x1/tt"+imdb_id)
     response2 = await _get("https://imdb-api.com/en/API/YouTubeTrailer/k_4ll239x1/tt"+imdb_id)
     soup2 = json.loads(response2.text)
     soup = json.loads(response.text)
