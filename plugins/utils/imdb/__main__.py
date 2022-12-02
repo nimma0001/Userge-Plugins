@@ -35,40 +35,35 @@ youtube = build('youtube','v3',developerKey = api_key)
 
 
 @userge.on_cmd("imdb2", about={
-    'header': "Scrap Movies2 & Tv Shows from IMDB",
+    'header': "Scrap Movies & Tv Shows from IMDB",
     'description': "Get info about a Movie on IMDB.\n"
                    "[NOTE: To use a custom poster, download "
                    "the poster with name imdb_thumb.jpg]",
-    'usage': "{tr}imd2b [Movie Name]",
-    'use inline': "@botusername imd2b [Movie Name]"})
+    'usage': "{tr}imdb [Movie Name]",
+    'use inline': "@botusername imdb [Movie Name]"})
 async def _imdb(message: Message):
     if not (imdb.API_ONE_URL or imdb.API_TWO_URL):
         return await message.err(
             "First set [these two vars](https://t.me/UsergePlugins/127) before using imdb",
             disable_web_page_preview=True
         )
-    try:
-        movie_name = message.input_str
-        await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-        response = await _get("https://betterimdbot.herokuapp.com/search.php?_="+movie_name)
-        srch_results = json.loads(response.text)
-        mov_imdb_id = srch_results.get("d")[0].get("id")
-        image_link, description = await get_movie_description(
-            mov_imdb_id, config.MAX_MESSAGE_LENGTH
-        )
-    except (IndexError, json.JSONDecodeError, AttributeError):
-        mov_imdb_id = srch_results.get("d")[1].get("id")
-        image_link, description = await get_movie_description(
-            mov_imdb_id, config.MAX_MESSAGE_LENGTH
-        )
-    except (IndexError, json.JSONDecodeError, AttributeError):
+    
+    try: (IndexError, json.JSONDecodeError, AttributeError):
+        mov_imdb_id = message.input_str
+        if "tt" in mov_imdb_id:
+            image_link, description = await get_movie_description(
+                mov_imdb_id, config.MAX_MESSAGE_LENGTH
+            )
+        else:
+            raise Exception
+    except:
         await message.edit("check spelling or movie not available on imdb")
         return
 
     if os.path.exists(THUMB_PATH):
         os.remove(THUMB_PATH)
         fb = open(THUMB_PATH,'wb')
-        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX720")).read())
+        fb.write(urllib.request.urlopen(image_link.replace("V1_Ratio0.6975_AL_", "V1_UX720")).read())
         fb.close()
         await message.client.send_photo(
             chat_id=message.chat.id,
@@ -96,8 +91,8 @@ async def _imdb(message: Message):
         )
 
 async def get_movie_description(imdb_id, max_length):
-    response = await _get("https://i-m-d-b.herokuapp.com/?tt="+imdb_id)
-    response2 = await _get("https://imdb-api.com/en/API/YouTubeTrailer/k_4ll239x1/tt"+imdb_id)
+    response = await _get("https://imdb-api.com/en/API/Title/k_4ll239x1/"+imdb_id)
+    response2 = await _get("https://imdb-api.com/en/API/YouTubeTrailer/k_4ll239x1/"+imdb_id)
     soup2 = json.loads(response2.text)
     soup = json.loads(response.text)
     try: 
@@ -110,33 +105,24 @@ async def get_movie_description(imdb_id, max_length):
         yt_link = f"https://m.youtube.com/watch?v={YTID}"
         
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
-    mov_name = soup.get('title')
-    image_link = soup.get('poster')
-    genres = soup.get("genres")
-    duration = soup.get("duration")
-    year = soup.get("year")
+    mov_name = soup['title']
+    image_link = soup['image']
+    genres = soup["genres"]
+    duration = soup["runtimeStr"]
+    year = soup["year"]
     if year:
         pass  
     else:
-        year = soup.get("release_date")
-        year = year["NAME"]
-    mov_rating = soup.get("UserRating").get("rating")
-    if mov_rating.strip() == '/':
-        mov_rating = "<code>Ratings not found!</code>"
-    else:
-        users = soup.get("UserRating").get("numeric_description_only")
-        if users:
-            mov_rating += f" (based on {users} users)"
-    if duration:
-        genres.append(duration)
+        year = "not found"
+    mov_rating = soup["imDbRating"]
 
     mov_country, mov_language = get_countries_and_languages(soup)
     director, writer, stars = get_credits_text(soup)
-    story_line = soup.get("summary").get("plot", 'Not available')
+    story_line = soup["plot"]
 
     description = f"<b>Title</b><a href='{image_link}'>🎬</a>: <code>{mov_name}</code>"
     description += f"""
-<b>>Genres: </b><code>{' '.join(genres) if len(genres) > 0 else ''}</code>
+<b>>Genres: </b><code>{genres}</code>
 <b>Rating⭐: </b><code>{mov_rating}</code>
 <b>Country🗺: </b><code>{mov_country}</code>
 <b>Language: </b><code>{mov_language}</code>
@@ -162,52 +148,31 @@ async def get_movie_description(imdb_id, max_length):
 
 
 def get_countries_and_languages(soup):
-    languages = soup.get("Language")
-    countries = soup.get("CountryOfOrigin")
-    lg_text = ""
-    if languages:
-        if len(languages) > 1:
-            lg_text = ', '.join(languages)
-        else:
-            lg_text = languages[0]
-    else:
-        lg_text = "Hindi"
-    if countries:
-        if len(countries) > 1:
-            ct_text = ', '.join(countries)
-        else:
-            ct_text = countries[0]
-    else:
-        ct_text = "Not Mentioned on IMDB"
+    try:
+        lg_text = soup["languages"]
+    except:
+        lg_text = "not found"
+    try:
+        ct_text = soup["countries"]
+    except:
+        ct_text = 'Not Found'
     return ct_text, lg_text
 
 
 def get_credits_text(soup):
-    pg = soup.get("sum_mary")
-    direc = pg.get("Directors")
-    writer = pg.get("Writers")
-    actor = pg.get("Stars")
-    if direc:
-        if len(direc) > 1:
-            director = ', '.join([x["NAME"] for x in direc])
-        else:
-            director = direc[0]["NAME"]
-    else:
-        director = "No Director Found!"
-    if writer:
-        if len(writer) > 1:
-            writers = ', '.join([x["NAME"] for x in writer])
-        else:
-            writers = writer[0]["NAME"]
-    else:
-        writers = "No Writer Found!"
-    if actor:
-        if len(actor) > 1:
-            actors = ', '.join([x["NAME"] for x in actor])
-        else:
-            actors = actor[0]["NAME"]
-    else:
-        actors = "No Actor Found!"
+    try:
+        director = soup["directors"]
+    except:
+        director = 'Not Found'
+    try:
+        writers = soup["writers"]
+    except:
+        writers = "Not Found"
+    try: 
+        actors = soup["stars"]
+    except:
+        actors= "Not Found"
+    
     return director, writers, actors
 
 
@@ -338,8 +303,10 @@ async def search_jw(movie_name: str, locale: str):
                     m_t_ = m_t_[:-2].strip()
                 break
         return m_t_
-     except:
-        return ""
+    except:
+        return " "
+        
+
 
 def get_provider(url):
 
