@@ -50,9 +50,9 @@ async def _imdb(message: Message):
     try:
         movie_name = message.input_str
         await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-        response = await _get("https://betterimdbot.herokuapp.com/search.php?_="+movie_name)
+        response = await _get("https://search.imdbot.workers.dev/?="+movie_name)
         srch_results = json.loads(response.text)
-        mov_imdb_id = srch_results.get("d")[0].get("id")
+        mov_imdb_id = srch_results.get("description")[0].get("#IMDB_ID")
         image_link, description = await get_movie_description(
             mov_imdb_id, config.MAX_MESSAGE_LENGTH
         )
