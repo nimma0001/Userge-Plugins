@@ -48,7 +48,7 @@ async def _imdb(message: Message):
             disable_web_page_preview=True
         )
     
-    try: (IndexError, json.JSONDecodeError, AttributeError):
+    try:
         mov_imdb_id = message.input_str
         if "tt" in mov_imdb_id:
             image_link, description = await get_movie_description(
