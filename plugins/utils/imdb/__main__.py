@@ -106,7 +106,7 @@ async def _imdb(message: Message):
         )
 
 async def get_movie_description(imdb_id, max_length):
-    response = await _get(f'https://www.omdbapi.com/?i={imdb_id}&apikey=801f07c1'
+    response = await _get(f'https://www.omdbapi.com/?i={imdb_id}&apikey=801f07c1')
     response2 = await _get("https://imdb-api.com/en/API/YouTubeTrailer/k_fl12vat7/"+imdb_id)
     soup2 = json.loads(response2.text)
     soup = json.loads(response.text)
