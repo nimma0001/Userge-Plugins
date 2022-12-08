@@ -26,7 +26,7 @@ from pyrogram.types import (
 )
 
 from userge import userge, Message, config, pool
-from .. import imdb
+from .. import imdb2
 THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
 TMDB_KEY = "5dae31e75ff0f7a0befc272d5deadd73"
 api_key = "AIzaSyA3VaZAgxEaGOc0kZJ_Cc40thm4Nha3o_M"
