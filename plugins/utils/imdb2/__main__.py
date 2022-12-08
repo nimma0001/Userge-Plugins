@@ -87,7 +87,7 @@ async def _imdb(message: Message):
         )
 
 async def get_movie_description(imdb_id, max_length):
-    response = await _get("https://imdb-api.com/en/API/Title/k_fl12vat7/"+imdb_id)
+    response = await _get(f'https://www.omdbapi.com/?i={imdb_id}&apikey=801f07c1'
     response2 = await _get("https://imdb-api.com/en/API/YouTubeTrailer/k_fl12vat7/"+imdb_id)
     soup2 = json.loads(response2.text)
     soup = json.loads(response.text)
@@ -101,20 +101,20 @@ async def get_movie_description(imdb_id, max_length):
         yt_link = f"https://m.youtube.com/watch?v={YTID}"
         
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
-    mov_name = soup['title']
-    image_link = soup['image']
-    genres = soup["genres"]
-    duration = soup["runtimeStr"]
-    year = soup["year"]
+    mov_name = soup['Title']
+    image_link = soup['Poster']
+    genres = soup["Genre"]
+    duration = soup["Runtime"]
+    year = soup["Year"]
     if year:
         pass  
     else:
         year = "not found"
-    mov_rating = soup["imDbRating"]
+    mov_rating = soup["Metascore"]
 
     mov_country, mov_language = get_countries_and_languages(soup)
     director, writer, stars = get_credits_text(soup)
-    story_line = soup["plot"]
+    story_line = soup["Plot"]
 
     description = f"<b>Title</b><a href='{image_link}'>🎬</a>: <code>{mov_name}</code>"
     description += f"""
@@ -145,11 +145,11 @@ async def get_movie_description(imdb_id, max_length):
 
 def get_countries_and_languages(soup):
     try:
-        lg_text = soup["languages"]
+        lg_text = soup["Language"]
     except:
         lg_text = "not found"
     try:
-        ct_text = soup["countries"]
+        ct_text = soup["Country"]
     except:
         ct_text = 'Not Found'
     return ct_text, lg_text
@@ -157,15 +157,15 @@ def get_countries_and_languages(soup):
 
 def get_credits_text(soup):
     try:
-        director = soup["directors"]
+        director = soup["Director"]
     except:
         director = 'Not Found'
     try:
-        writers = soup["writers"]
+        writers = soup["Writer"]
     except:
         writers = "Not Found"
     try: 
-        actors = soup["stars"]
+        actors = soup["Actors"]
     except:
         actors= "Not Found"
     
