@@ -26,7 +26,7 @@ from pyrogram.types import (
 )
 
 from userge import userge, Message, config, pool
-from .. import imdb2
+from .. import imdb
 THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
 TMDB_KEY = "5dae31e75ff0f7a0befc272d5deadd73"
 api_key = "AIzaSyA3VaZAgxEaGOc0kZJ_Cc40thm4Nha3o_M"
@@ -47,33 +47,23 @@ async def _imdb(message: Message):
             "First set [these two vars](https://t.me/UsergePlugins/127) before using imdb",
             disable_web_page_preview=True
         )
-    if 'tt' in message.input_str:
-        try:
-            mov_imdb_id = message.input_str
-            image_link, description = await get_movie_description(
-                mov_imdb_id, config.MAX_MESSAGE_LENGTH
-            )
-        except (IndexError, json.JSONDecodeError, AttributeError):
-            await message.edit("check spelling or movie not available on imdb")
-            return
-    else:
-        try:
-            movie_name = message.input_str
-            await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-            response = await _get("https://search.imdbot.workers.dev/?q="+movie_name)
-            srch_results = json.loads(response.text)
-            mov_imdb_id = srch_results.get("description")[0].get("#IMDB_ID")
-            image_link, description = await get_movie_description(
-                mov_imdb_id, config.MAX_MESSAGE_LENGTH
-            )
-        except (IndexError, json.JSONDecodeError, AttributeError):
-            mov_imdb_id = message.input_str
-            image_link, description = await get_movie_description(
-                mov_imdb_id, config.MAX_MESSAGE_LENGTH
-            )
-        except (IndexError, json.JSONDecodeError, AttributeError):
-            await message.edit("check spelling or movie not available on imdb")
-            return
+    try:
+        movie_name = message.input_str
+        await message.edit(f"__searching IMDB for__ : `{movie_name}`")
+        response = await _get("https://search.imdbot.workers.dev/?q="+movie_name)
+        srch_results = json.loads(response.text)
+        mov_imdb_id = srch_results.get("description")[0].get("#IMDB_ID")
+        image_link, description = await get_movie_description(
+            mov_imdb_id, config.MAX_MESSAGE_LENGTH
+        )
+    except (IndexError, json.JSONDecodeError, AttributeError):
+        mov_imdb_id = message.input_str
+        image_link, description = await get_movie_description(
+            mov_imdb_id, config.MAX_MESSAGE_LENGTH
+        )
+    except (IndexError, json.JSONDecodeError, AttributeError):
+        await message.edit("check spelling or movie not available on imdb")
+        return
 
     if os.path.exists(THUMB_PATH):
         os.remove(THUMB_PATH)
@@ -106,7 +96,7 @@ async def _imdb(message: Message):
         )
 
 async def get_movie_description(imdb_id, max_length):
-    response = await _get(f'https://www.omdbapi.com/?i={imdb_id}&apikey=801f07c1'
+    response = await _get("https://imdb-api.com/en/API/Title/k_fl12vat7/"+imdb_id)
     response2 = await _get("https://imdb-api.com/en/API/YouTubeTrailer/k_fl12vat7/"+imdb_id)
     soup2 = json.loads(response2.text)
     soup = json.loads(response.text)
@@ -120,20 +110,20 @@ async def get_movie_description(imdb_id, max_length):
         yt_link = f"https://m.youtube.com/watch?v={YTID}"
         
     mov_link = f"https://www.imdb.com/title/{imdb_id}"
-    mov_name = soup['Title']
-    image_link = soup['Poster']
-    genres = soup["Genre"]
-    duration = soup["Runtime"]
-    year = soup["Year"]
+    mov_name = soup['title']
+    image_link = soup['image']
+    genres = soup["genres"]
+    duration = soup["runtimeStr"]
+    year = soup["year"]
     if year:
         pass  
     else:
         year = "not found"
-    mov_rating = soup["Metascore"]
+    mov_rating = soup["imDbRating"]
 
     mov_country, mov_language = get_countries_and_languages(soup)
     director, writer, stars = get_credits_text(soup)
-    story_line = soup["Plot"]
+    story_line = soup["plot"]
 
     description = f"<b>Title</b><a href='{image_link}'>🎬</a>: <code>{mov_name}</code>"
     description += f"""
@@ -164,11 +154,11 @@ async def get_movie_description(imdb_id, max_length):
 
 def get_countries_and_languages(soup):
     try:
-        lg_text = soup["Language"]
+        lg_text = soup["languages"]
     except:
         lg_text = "not found"
     try:
-        ct_text = soup["Country"]
+        ct_text = soup["countries"]
     except:
         ct_text = 'Not Found'
     return ct_text, lg_text
@@ -176,15 +166,15 @@ def get_countries_and_languages(soup):
 
 def get_credits_text(soup):
     try:
-        director = soup["Director"]
+        director = soup["directors"]
     except:
         director = 'Not Found'
     try:
-        writers = soup["Writer"]
+        writers = soup["writers"]
     except:
         writers = "Not Found"
     try: 
-        actors = soup["Actors"]
+        actors = soup["stars"]
     except:
         actors= "Not Found"
     
