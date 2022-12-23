@@ -47,24 +47,28 @@ async def _imdb(message: Message):
             "First set [these two vars](https://t.me/UsergePlugins/127) before using imdb",
             disable_web_page_preview=True
         )
-    try:
-        movie_name = message.input_str
-        await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-        response = await _get("https://search.imdbot.workers.dev/?q="+movie_name)
-        srch_results = json.loads(response.text)
-        mov_imdb_id = srch_results.get("description")[0].get("#IMDB_ID")
-        image_link, description = await get_movie_description(
-            mov_imdb_id, config.MAX_MESSAGE_LENGTH
-        )
-    except (IndexError, json.JSONDecodeError, AttributeError):
-        mov_imdb_id = message.input_str
-        image_link, description = await get_movie_description(
-            mov_imdb_id, config.MAX_MESSAGE_LENGTH
-        )
-    except (IndexError, json.JSONDecodeError, AttributeError):
-        await message.edit("check spelling or movie not available on imdb")
-        return
-
+    if 'tt' not in message.input_str:
+        try:
+            movie_name = message.input_str
+            await message.edit(f"__searching IMDB for__ : `{movie_name}`")
+            response = await _get("https://search.imdbot.workers.dev/?q="+movie_name)
+            srch_results = json.loads(response.text)
+            mov_imdb_id = srch_results.get("description")[0].get("#IMDB_ID")
+            image_link, description = await get_movie_description(
+                mov_imdb_id, config.MAX_MESSAGE_LENGTH
+            )
+        except (IndexError, json.JSONDecodeError, AttributeError):
+            await message.edit("check spelling or movie not available on imdb")
+            return
+    if 'tt' in message.input_str:
+        try:
+            mov_imdb_id = message.input_str
+            image_link, description = await get_movie_description(
+                mov_imdb_id, config.MAX_MESSAGE_LENGTH
+            )
+        except (IndexError, json.JSONDecodeError, AttributeError)
+            await message.edit("check spelling or movie not available on imdb")
+            return
     if os.path.exists(THUMB_PATH):
         os.remove(THUMB_PATH)
         fb = open(THUMB_PATH,'wb')
