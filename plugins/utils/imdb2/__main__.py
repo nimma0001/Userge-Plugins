@@ -66,7 +66,7 @@ async def _imdb(message: Message):
             image_link, description = await get_movie_description(
                 mov_imdb_id, config.MAX_MESSAGE_LENGTH
             )
-        except (IndexError, json.JSONDecodeError, AttributeError)
+        except (IndexError, json.JSONDecodeError, AttributeError):
             await message.edit("check spelling or movie not available on imdb")
             return
     if os.path.exists(THUMB_PATH):
