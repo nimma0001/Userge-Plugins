@@ -47,8 +47,6 @@ async def first_command(message: Message) -> None:
     message
     await message.edit(message.input_str.split('=')[1])
 #     await message.send_message(message.text)
-    await message.edit("downloading file...")
-    test.Dynamic.TIMEOUT = 90
-    
+    await message.edit("downloading file...")  
     success = download_file(message.input_str.split('=')[1])
 
