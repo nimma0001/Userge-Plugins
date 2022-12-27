@@ -16,7 +16,6 @@ _SAVED_SETTINGS = get_collection("CONFIGS")
 @userge.on_start
 async def _init() -> None:
     global service  # pylint: disable=global-statement
-    _LOG.debug("Setting GDrive DBase...")
     result = await _SAVED_SETTINGS.find_one({'_id': 'GDRIVE'}, {'creds': 1})
     _CREDS = pickle.loads(result['creds']) if result else None  # nosec
     service = build('drive', 'v3', credentials=_CREDS)
