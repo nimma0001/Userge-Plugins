@@ -47,7 +47,7 @@ async def first_command(message: Message) -> None:
     message
     await message.edit(message.input_str.split('=')[1])
     response = service.files().get(
-                fileId=file_id, fields='name', supportsTeamDrives=True).execute()
+                fileId=message.input_str.split('=')[1], fields='name', supportsTeamDrives=True).execute()
     await message.edit(response)  
 #     await message.send_message(message.text)
     await message.edit("downloading file...")  
