@@ -30,7 +30,7 @@ def download_file(file_id):
         name = response['name']
         today = date.today().strftime("%d")
         name = name.lower().replace('1337xhd.shop-big ', str(today)).replace('mlsbd.shop', '')
-        request = service.files().get_media(fileId=file_id, name=name)
+        request = service.files().get_media(fileId=file_id)
         file = request.execute()
         with open(save_path, 'wb') as f:
             f.write(file)
@@ -46,6 +46,9 @@ async def first_command(message: Message) -> None:
     """ this thing will be used as command doc string """
     message
     await message.edit(message.input_str.split('=')[1])
+    response = service.files().get(
+                fileId=file_id, fields='name', supportsTeamDrives=True).execute()
+    await message.edit(response)  
 #     await message.send_message(message.text)
     await message.edit("downloading file...")  
     success = download_file(message.input_str.split('=')[1])
