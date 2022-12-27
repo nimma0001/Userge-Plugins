@@ -22,7 +22,7 @@ async def _init() -> None:
     service = build('drive', 'v3', credentials=_CREDS)
     
 
-def download_file(file_id):
+async def download_file(file_id):
     try:
         response = service.files().get(
                 fileId=file_id, fields='name', supportsTeamDrives=True).execute()
@@ -48,8 +48,7 @@ async def first_command(message: Message) -> None:
     await message.edit(message.input_str.split('=')[1])
     response = service.files().get(
                 fileId=message.input_str.split('=')[1], fields='name', supportsTeamDrives=True).execute()
-    await message.edit(response['name'])  
 #     await message.send_message(message.text)
-    await message.edit("downloading file...")  
-    success = download_file(message.input_str.split('=')[1])
+    await message.edit(f"{response['name']} downloading file...")  
+    success = await download_file(message.input_str.split('=')[1])
 
