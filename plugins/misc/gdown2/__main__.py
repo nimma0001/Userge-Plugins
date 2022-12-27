@@ -32,7 +32,7 @@ def download_file(file_id):
         name = name.lower().replace('1337xhd.shop-big ', str(today)).replace('mlsbd.shop', '')
         request = service.files().get_media(fileId=file_id)
         file = request.execute()
-        with open(save_path, 'wb') as f:
+        with open(name, 'wb') as f:
             f.write(file)
         subprocess.call(['bash', 'did.sh', name, str(today)])
         return True
@@ -48,7 +48,7 @@ async def first_command(message: Message) -> None:
     await message.edit(message.input_str.split('=')[1])
     response = service.files().get(
                 fileId=message.input_str.split('=')[1], fields='name', supportsTeamDrives=True).execute()
-    await message.edit(response)  
+    await message.edit(response['name'])  
 #     await message.send_message(message.text)
     await message.edit("downloading file...")  
     success = download_file(message.input_str.split('=')[1])
