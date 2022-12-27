@@ -45,8 +45,8 @@ def download_file(file_id):
 async def first_command(message: Message) -> None:
     """ this thing will be used as command doc string """
     message
-    await message.edit(message)
-    await message.send_message(message.text)
+    await message.edit(message.input_str)
+#     await message.send_message(message.text)
     await message.edit("downloading file...")
     test.Dynamic.TIMEOUT = 90
     
