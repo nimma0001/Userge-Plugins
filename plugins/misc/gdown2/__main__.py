@@ -24,7 +24,7 @@ async def _init() -> None:
 
 def download_file(file_id):
     try:
-        response = self._service.files().get(
+        response = service.files().get(
                 fileId=file_id, fields='name', supportsTeamDrives=True).execute()
 
         name = response['name']
