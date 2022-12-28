@@ -11,7 +11,7 @@ from datetime import date
 @userge.on_start
 async def _init() -> None:
     gauth = GoogleAuth()
-    gauth.LoadCredentialsFile('token.json')
+    gauth.LoadCredentialsFile('/app/token.json')
     drive = GoogleDrive(gauth)
 
 @userge.on_cmd("gdown2", about="my first command")
