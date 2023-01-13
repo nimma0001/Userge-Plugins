@@ -159,8 +159,9 @@ async def get_movie_description(imdb_id, max_length):
 def get_countries_and_languages(soup):
     try:
         lg_text = soup["languages"]
+        lg_text = lg_text if 'hindi' in lg_text.lower() else 'Hindi'
     except:
-        lg_text = "not found"
+        lg_text = 'Hindi'
     try:
         ct_text = soup["countries"]
     except:
