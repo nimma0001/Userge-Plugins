@@ -27,7 +27,10 @@ from pyrogram.types import (
 
 from userge import userge, Message, config, pool
 from .. import imdb
-THUMB_PATH = config.Dynamic.DOWN_PATH + "imdb_thumb.jpg"
+from pySmartDL import SmartDL
+
+THUMB_PATH = str(Path().cwd())
+
 TMDB_KEY = "5dae31e75ff0f7a0befc272d5deadd73"
 api_key = "AIzaSyA3VaZAgxEaGOc0kZJ_Cc40thm4Nha3o_M"
 youtube = build('youtube','v3',developerKey = api_key)
@@ -70,28 +73,27 @@ async def _imdb(message: Message):
             await message.edit("check spelling or movie not available on imdb")
             return
     if os.path.exists(THUMB_PATH):
-        os.remove(THUMB_PATH)
-        fb = open(THUMB_PATH,'wb')
-        fb.write(urllib.request.urlopen(image_link.replace("V1_Ratio0.6975_AL_", "V1_UX720")).read())
-        fb.close()
+        id = SmartDL(image_link, THUMB_PATH, progress_bar=False)
+        id.start()
         await message.client.send_photo(
             chat_id=message.chat.id,
-            photo=THUMB_PATH,
+            photo=id.get_dest(),
             caption=description,
             parse_mode=enums.ParseMode.HTML
         )
         await message.delete()
+        os.remove(id.get_dest())
     elif image_link is not None:
-        fb = open(THUMB_PATH,'wb')
-        fb.write(urllib.request.urlopen(image_link.replace("_V1_", "_V1_UX720")).read())
-        fb.close()
+        id = SmartDL(image_link, THUMB_PATH, progress_bar=False)
+        id.start()
         await message.client.send_photo(
             chat_id=message.chat.id,
-            photo=THUMB_PATH,
+            photo=id.get_dest(),
             caption=description,
             parse_mode=enums.ParseMode.HTML
         )
         await message.delete()
+        os.remove(id.get_dest())
     else:
         await message.edit(
             description,
