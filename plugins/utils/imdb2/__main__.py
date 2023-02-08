@@ -26,7 +26,7 @@ from pyrogram.types import (
 )
 
 from userge import userge, Message, config, pool
-from .. import imdb
+from .. import imdb2
 from pySmartDL import SmartDL
 
 THUMB_PATH = str(Path().cwd())
