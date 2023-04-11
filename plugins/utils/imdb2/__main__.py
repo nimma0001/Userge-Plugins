@@ -55,9 +55,9 @@ async def _imdb(message: Message):
         try:
             movie_name = message.input_str
             await message.edit(f"__searching IMDB for__ : `{movie_name}`")
-            response = await _get("https://search.imdbot.workers.dev/?q="+movie_name)
-            srch_results = json.loads(response.text)
-            mov_imdb_id = srch_results.get("description")[0].get("#IMDB_ID")
+            response = await _get("https://www.omdbapi.com/?t="+movie_name.replace('', '%20') +'&apikey=fc5c20bd')
+            srch_results = response.json()
+            mov_imdb_id = srch_results.get("imdbID")
             image_link, description = await get_movie_description(
                 mov_imdb_id, config.MAX_MESSAGE_LENGTH
             )
